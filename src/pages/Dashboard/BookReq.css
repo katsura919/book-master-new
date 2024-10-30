@@ -1,0 +1,155 @@
+.home-container{
+  display: flex;
+  flex-direction: column; 
+  width: calc(100% - 350px); 
+  height: 100%;
+  margin-left: 300px;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  overflow-x: hidden; 
+}
+.radio-inputs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 0.5rem;
+    background-color: #EEE;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    padding: 0.25rem;
+    width: 500px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .radio-inputs .radio {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+  
+  .radio-inputs .radio input {
+    display: none;
+  }
+  
+  .radio-inputs .radio .name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border: none;
+    padding: .5rem 0;
+    color: rgba(51, 65, 85, 1);
+    transition: all .15s ease-in-out;
+  }
+  
+  .radio-inputs .radio input:checked + .name {
+    background-color: #fff;
+    font-weight: 600;
+  }
+
+
+
+  .home-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .dashboard-table th,
+  .dashboard-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .dashboard-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .dashboard-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .dashboard-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .btn-container {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  
+  button {
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 80px;
+    height: 45px;
+    transition: 0.3s;
+    margin: 5px;
+  }
+  
+  .approve-button {
+    background-color: #32cf47;
+  }
+  .reject-button {
+    background-color: #f63b3b;
+  }
+  .reject-button:hover {
+    background-color: #f63b3b;
+    box-shadow: 0 0 0 5px #f63b3b5f;
+  }
+  
+  .approve-button:hover {
+    background-color: #32cf47;
+    box-shadow: 0 0 0 5px #4bf63b5f;
+    color: #fff;
+  }
+  
+  .approve-button:disabled,
+  .reject-button:disabled {
+    color: black;
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    pointer-events: none; /* Prevent hover effects */
+    /* Remove any hover effect styles here if needed */
+  }
+  
+  
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .nav-btn{
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination span {
+    align-self: center;
+    margin: 0 10px;
+  }
+  

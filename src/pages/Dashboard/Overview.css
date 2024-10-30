@@ -1,0 +1,80 @@
+/* Overview Container */
+.overview-container {
+  display: flex;
+  flex-direction: column; 
+  width: calc(100% - 300px); 
+  height: 100%;
+  margin-left: 300px;
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  overflow-x: hidden; 
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 768px) {
+  .overview-container {
+      padding: 10px;
+  }
+}
+
+/* Header Styling */
+.overview-header {
+  margin-bottom: 20px;
+  text-align: center; /* Center the header */
+  color: rgb(22, 22, 22);
+}
+
+/* Card Container */
+.card-container {
+  display: flex;
+  flex-wrap: wrap; /* Wrap cards to fit smaller screens */
+  gap: 20px;
+  justify-content: center; /* Center cards horizontally */
+  align-items: center; /* Align cards vertically */
+}
+
+/* Individual Card */
+.card {
+  flex: 1 1 calc(25% - 40px); /* Each card takes 25% width with spacing */
+  min-width: 200px;
+  max-width: 300px;
+  padding: 20px;
+  text-align: center;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+              rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover Effect */
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px); /* Adds a slight lift effect */
+}
+
+/* Card Title */
+.card h3 {
+  margin: 0;
+  font-size: 1.5em;
+  color: #262424;
+}
+
+/* Card Count */
+.card p {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Responsive card layout */
+@media (max-width: 768px) {
+  .card {
+      flex: 1 1 calc(50% - 20px); /* Two cards per row */
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+      flex: 1 1 100%; /* Single card per row */
+  }
+}
