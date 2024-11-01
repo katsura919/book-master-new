@@ -1,5 +1,6 @@
 // server.js
 const express = require('express');
+const router = express.Router();
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -338,6 +339,33 @@ app.get('/available-books', (req, res) => {
       res.json(counts);
     });
   });
+// Endpoint to get request counts for today and yesterday
+app.get('/request-date', (req, res) => {
+  const queries = [
+    { name: 'todayCount', query: `SELECT COUNT(*) AS count FROM book_req WHERE req_created = CURRENT_DATE` },
+    { name: 'yesterdayCount', query: `SELECT COUNT(*) AS count FROM book_req WHERE req_created = DATE('now', '-1 day')` },
+    { name: 'totalCount', query: `SELECT COUNT(*) AS count FROM book_req` },
+  ];
+
+  Promise.all(
+    queries.map(({ query }) => new Promise((resolve, reject) => {
+      db.get(query, (err, result) => {
+        if (err) return reject(err);
+        resolve(result.count || 0);
+      });
+    }))
+  )
+  .then(([todayCount, yesterdayCount, totalCount]) => {
+    res.json({ todayCount, yesterdayCount, totalCount });
+  })
+  .catch(error => {
+    console.error('Error fetching request counts:', error);
+    res.status(500).json({ error: 'Error fetching request counts' });
+  });
+});
+
+
+
 
 // Show Requests
   // Show all requests
@@ -357,6 +385,7 @@ app.get('/available-books', (req, res) => {
         ab.title,
         ab.isbn,
         bb.due_date,
+        bb.book_status,
         bb.hours_due,
         bb.penalty
       FROM 
@@ -393,6 +422,7 @@ app.get('/available-books', (req, res) => {
           title,
           isbn,
           due_date,
+          book_status,
           hours_due,
           penalty
         } = row;
@@ -424,6 +454,7 @@ app.get('/available-books', (req, res) => {
             title,
             isbn,
             due_date,
+            book_status,
             hours_due,
             penalty
           });
@@ -453,6 +484,7 @@ app.get('/available-books', (req, res) => {
         ab.title,
         ab.isbn,
         bb.due_date,
+        bb.book_status,
         bb.hours_due,
         bb.penalty
       FROM 
@@ -491,6 +523,7 @@ app.get('/available-books', (req, res) => {
           title,
           isbn,
           due_date,
+          book_status,
           hours_due,
           penalty
         } = row;
@@ -522,6 +555,7 @@ app.get('/available-books', (req, res) => {
             title,
             isbn,
             due_date,
+            book_status,
             hours_due,
             penalty
           });
@@ -551,6 +585,7 @@ app.get('/approved-req', (req, res) => {
         ab.title,
         ab.isbn,
         bb.due_date,
+        bb.book_status,
         bb.hours_due,
         bb.penalty
       FROM 
@@ -589,6 +624,7 @@ app.get('/approved-req', (req, res) => {
           title,
           isbn,
           due_date,
+          book_status,
           hours_due,
           penalty
         } = row;
@@ -620,6 +656,7 @@ app.get('/approved-req', (req, res) => {
             title,
             isbn,
             due_date,
+            book_status,
             hours_due,
             penalty
           });
@@ -687,6 +724,8 @@ app.get('/rejected-req', (req, res) => {
           title,
           isbn,
           due_date,
+          hours_due,
+          penalty
         } = row;
   
         // Check if the request already exists in the accumulator
@@ -745,6 +784,7 @@ app.get('/overdue-req', (req, res) => {
         ab.title,
         ab.isbn,
         bb.due_date,
+        bb.book_status,
         bb.hours_due,
         bb.penalty
       FROM 
@@ -783,6 +823,7 @@ app.get('/overdue-req', (req, res) => {
           title,
           isbn,
           due_date,
+          book_status,
           hours_due,
           penalty
         } = row;
@@ -814,6 +855,7 @@ app.get('/overdue-req', (req, res) => {
             title,
             isbn,
             due_date,
+            book_status,
             hours_due,
             penalty
           });
@@ -1050,7 +1092,7 @@ app.post("/books", upload.single("cover_image"), (req, res) => {
 
 
 // Cron job that runs every hour
-cron.schedule('* * * * *', () => {
+cron.schedule('0 * * * *', () => {
   console.log('Running hourly job to update hours_due and penalties...');
 
   const now = new Date();
@@ -1093,7 +1135,6 @@ cron.schedule('* * * * *', () => {
   });
 });
 
-
 // Function to update approved status to overdue
 const updateOverdueStatuses = () => {
   const updateQuery = `
@@ -1116,14 +1157,115 @@ const updateOverdueStatuses = () => {
   };
   
 // Schedule updateOverdueStatuses to run every hour
-cron.schedule('* * * * *', updateOverdueStatuses);
+cron.schedule('0 * * * *', updateOverdueStatuses);
 
 
-// Protected route example (User persistence)
-app.get('/api/profile', authenticateToken, (req, res) => {
-  res.json({ message: `Welcome ${req.user.username}!`, user: req.user });
+// POST endpoint to update book status
+app.post('/update-book-status/:bookId', async (req, res) => {
+  const { bookId } = req.params;
+  const { book_status } = req.body;
+
+  if (!book_status) {
+    return res.status(400).json({ error: 'Book status is required' });
+  }
+
+  try {
+    const result = await db.run(
+      `UPDATE borrowed_books SET book_status = ? WHERE book_id = ?`,
+      [book_status, bookId]
+    );
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'Book not found or status unchanged' });
+    }
+
+    // If the book status is 'RETURNED', increase the available_copies
+    if (book_status === 'RETURNED') {
+      await db.run(
+        `UPDATE available_books SET available_copies = available_copies + 1 WHERE book_id = ?`,
+        [bookId]
+      );
+    }
+
+    res.json({ message: 'Book status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while updating book status' });
+  }
 });
 
+
+// Fetch request details by requestId
+app.get('/req/:id', (req, res) => {
+  const requestId = req.params.id;
+
+  const sql = `
+    SELECT 
+      br.req_id,
+      br.borrower_id,
+      br.status,
+      br.req_created,
+      br.req_approve,
+      b.first_name,
+      b.last_name,
+      b.borrower_type,
+      bb.borrow_id,
+      bb.book_id,
+      ab.title,
+      ab.isbn,
+      bb.due_date,
+      bb.book_status,
+      bb.hours_due,
+      bb.penalty
+    FROM 
+      book_req AS br
+    JOIN 
+      borrowers AS b ON br.borrower_id = b.borrower_id
+    LEFT JOIN 
+      borrowed_books AS bb ON br.req_id = bb.req_id
+    LEFT JOIN 
+      available_books AS ab ON bb.book_id = ab.book_id
+    WHERE 
+      br.req_id = ?;  -- Filter by request ID
+  `;
+
+  db.all(sql, [requestId], (err, rows) => {
+    if (err) {
+      console.error('Error fetching request:', err.message);
+      return res.status(500).json({ message: 'Error fetching request.' });
+    }
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Request not found.' });
+    }
+
+    // Format the result
+    const requestDetails = {
+      req_id: rows[0].req_id,
+      borrower_id: rows[0].borrower_id,
+      status: rows[0].status,
+      req_created: rows[0].req_created,
+      req_approve: rows[0].req_approve,
+      borrower: {
+        first_name: rows[0].first_name,
+        last_name: rows[0].last_name,
+        borrower_type: rows[0].borrower_type,
+      },
+      books: rows.map(row => ({
+        borrow_id: row.borrow_id,
+        book_id: row.book_id,
+        title: row.title,
+        isbn: row.isbn,
+        due_date: row.due_date,
+        book_status: row.book_status,
+        hours_due: row.hours_due,
+        penalty: row.penalty,
+      })),
+    };
+
+    res.status(200).json(requestDetails);
+  });
+});
 
 
 // Start the server

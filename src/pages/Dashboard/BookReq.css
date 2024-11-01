@@ -69,6 +69,7 @@
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
+    font-size: 0.8rem;
   }
   
   .dashboard-table th {
@@ -86,42 +87,6 @@
   .btn-container {
     display: flex;
     justify-content: space-evenly;
-  }
-  
-  
-  button {
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    width: 80px;
-    height: 45px;
-    transition: 0.3s;
-    margin: 5px;
-  }
-  
-  .approve-button {
-    background-color: #32cf47;
-  }
-  .reject-button {
-    background-color: #f63b3b;
-  }
-  .reject-button:hover {
-    background-color: #f63b3b;
-    box-shadow: 0 0 0 5px #f63b3b5f;
-  }
-  
-  .approve-button:hover {
-    background-color: #32cf47;
-    box-shadow: 0 0 0 5px #4bf63b5f;
-    color: #fff;
-  }
-  
-  .approve-button:disabled,
-  .reject-button:disabled {
-    color: black;
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    pointer-events: none; /* Prevent hover effects */
-    /* Remove any hover effect styles here if needed */
   }
   
   

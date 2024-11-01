@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './BookReq.css';
-import Modal from './Modal'; // Import the Modal component
+import RequestModal from './components/RequestModal'; // Import the Modal component
 
-const ENTRIES_PER_PAGE = 3;
+const ENTRIES_PER_PAGE = 15;
 
 function BookReq() {
   const [bookRequests, setBookRequests] = useState([]);
@@ -27,31 +27,6 @@ function BookReq() {
     fetchBookRequests();
   }, [fetchType]);
 
-  const handleApprove = async (reqId) => {
-    try {
-      const response = await axios.post('http://localhost:5000/approve-request', { reqId });
-      if (response.status === 200) {
-        alert('Request approved successfully!');
-        fetchBookRequests(); // Refresh the list after approving
-      }
-    } catch (error) {
-      console.error('Error approving the request:', error);
-      alert('Failed to approve the request.');
-    }
-  };
-
-  const handleDecline = async (reqId) => {
-    try {
-      const response = await axios.post('http://localhost:5000/reject-request', { reqId });
-      if (response.status === 200) {
-        alert('Request declined successfully!');
-        fetchBookRequests(); // Refresh the list after declining
-      }
-    } catch (error) {
-      console.error('Error declining the request:', error);
-      alert('Failed to decline the request.');
-    }
-  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -81,6 +56,7 @@ function BookReq() {
     setSelectedRequest(null);
   };
 
+
   return (
     <div className="home-container">
       <div>
@@ -95,7 +71,7 @@ function BookReq() {
         onChange={handleSearchChange}
       />
 
-<div className="radio-inputs">
+      <div className="radio-inputs">
         <label className="radio">
           <input
             type="radio"
@@ -180,7 +156,7 @@ function BookReq() {
               <th>Due Date</th>
               <th>Hours Due</th>
               <th>Penalty</th>
-              <th>Actions</th>
+          
             </tr>
           </thead>
           <tbody>
@@ -197,24 +173,7 @@ function BookReq() {
                 <td>{request.books.length > 0 ? request.books[0].due_date : 'N/A'}</td>
                 <td>{request.books.length > 0 ? request.books[0].hours_due : 'N/A'} hrs</td>
                 <td>₱ {request.books.length > 0 ? request.books[0].penalty : 'N/A'}</td>
-                <td>
-                  <div className='btn-container'>
-                    <button
-                      onClick={() => handleApprove(request.req_id)}
-                      disabled={request.status === 'Approved' || request.status === 'Overdue'}
-                      className={request.status === 'Approved' ? 'Approved' : 'approve-button'}
-                    >
-                      {request.status === 'Approved' ? 'Approved' : 'Approve'}
-                    </button>
-                    <button
-                      onClick={() => handleDecline(request.req_id)}
-                      disabled={request.status === 'Rejected' || request.status === 'Overdue'}
-                      className={request.status === 'Rejected' ? 'Rejected' : 'reject-button'}
-                    >
-                      {request.status === 'Rejected' ? 'Rejected' : 'Reject'}
-                    </button>
-                  </div>
-                </td>
+                
               </tr>
             ))}
           </tbody>
@@ -230,7 +189,7 @@ function BookReq() {
         </button>
       </div>
       {/* Modal for request details */}
-      <Modal isOpen={isModalOpen} onClose={closeModal} requestDetails={selectedRequest} />
+      <RequestModal isOpen={isModalOpen} onClose={closeModal} requestID={selectedRequest?.req_id} />
     </div>
   );
 }
