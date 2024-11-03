@@ -18,7 +18,10 @@ app.use(bodyParser.json());
 
 // Multer setup for image uploads
 const storage = multer.memoryStorage(); // Store image in memory
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1 * 1024 * 1024 } // Limit file size to 1MB
+});
 
 
 
@@ -1090,6 +1093,69 @@ app.post("/books", upload.single("cover_image"), (req, res) => {
   );
 });
 
+app.get("/book/:bookId", (req, res) => {
+  const { bookId } = req.params;
+
+  const query = "SELECT * FROM available_books WHERE book_id = ?";
+  db.get(query, [bookId], (err, row) => {
+    if (err) {
+      console.error("Error fetching book:", err);
+      return res.status(500).json({ error: "An error occurred while fetching the book data." });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Book not found." });
+    }
+
+    // Convert the BLOB image to Base64 if the cover_image field is not null
+    if (row.cover_image) {
+      const base64Image = Buffer.from(row.cover_image).toString('base64');
+      row.cover_image = `data:image/jpeg;base64,${base64Image}`; // Adjust the MIME type as needed (e.g., image/png)
+    }
+
+    res.json(row);
+  });
+});
+
+
+// API endpoint to update book information with image
+app.put('/book/:bookId', upload.single('cover_image'), async (req, res) => {
+  const { bookId } = req.params;
+  const { title, isbn, author, total_copies, available_copies } = req.body;
+
+  // Check if the uploaded file exceeds the size limit
+  if (req.file && req.file.size > 1 * 1024 * 1024) {
+    return res.status(413).json({ error: 'File size exceeds limit of 1MB' });
+  }
+
+  try {
+    // First, fetch the current book data to retain the image if not updated
+    const currentBook = await new Promise((resolve, reject) => {
+      db.get("SELECT * FROM available_books WHERE book_id = ?", [bookId], (err, row) => {
+        if (err) return reject(err);
+        resolve(row);
+      });
+    });
+
+    // Determine coverImageData based on whether a new image was uploaded
+    let coverImageData = req.file ? req.file.buffer : currentBook.cover_image; // Use existing image if no new image
+
+    // Update book data in the database
+    const result = await db.run(
+      `UPDATE available_books SET title = ?, isbn = ?, author = ?, total_copies = ?, available_copies = ?, cover_image = ? WHERE book_id = ?`,
+      [title, isbn, author, total_copies, available_copies, coverImageData, bookId]
+    );
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'Book not found or data unchanged' });
+    }
+    
+    res.json({ message: 'Book updated successfully' });
+  } catch (error) {
+    console.error("Error updating book:", error);
+    res.status(500).json({ error: 'An error occurred while updating the book' });
+  }
+});
 
 // Cron job that runs every hour
 cron.schedule('0 * * * *', () => {

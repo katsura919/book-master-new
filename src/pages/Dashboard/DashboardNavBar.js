@@ -9,8 +9,8 @@ const DashboardNavbar = () => {
             <ul>
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/dashboard">Dashboard</Link></li>
-                <li><Link to="/dashboard/bookreq">Book Requests</Link></li>
-                <li><Link to="/dashboard/addbook">Add Book</Link></li>
+                <li><Link to="/dashboard/bookreq">Requests</Link></li>
+                <li><Link to="/dashboard/addbook">Books</Link></li>
             </ul>
         </nav>
     );

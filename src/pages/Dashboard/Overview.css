@@ -2,11 +2,11 @@
 .overview-container {
   display: flex;
   flex-direction: column; 
-  width: calc(100% - 300px); 
   height: 900px;
-  margin-left: 300px;
+  margin-left: 270px;
   transition: margin-left 0.3s ease, width 0.3s ease;
   overflow-x: hidden; 
+
 }
 
 /* Responsive layout for smaller screens */
@@ -19,7 +19,6 @@
 /* Header Styling */
 .overview-header {
   margin-bottom: 20px;
-  text-align: center; /* Center the header */
   color: rgb(22, 22, 22);
 }
 
@@ -28,15 +27,17 @@
 
 .request-count-card {
   background-color: #ffffff;
-  border-radius: 12px;
+  border-radius: 5px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  max-width: 400px;
+  width: 90%;
+  min-width: 600px;
   margin: 20px auto;
   text-align: center;
   font-family: Arial, sans-serif;
   color: #333;
   transition: transform 0.2s ease-in-out;
+
 }
 
 .request-count-card:hover {
@@ -51,6 +52,7 @@
 }
 
 .count-section {
+  gap: 30px;
   display: flex;
   justify-content: space-between;
 }

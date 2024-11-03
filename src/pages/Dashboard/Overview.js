@@ -42,12 +42,12 @@ function Overview() {
   return (
     <div className="overview-container">
       <header className="overview-header">
-        <h1>Overview</h1>
+        <h1>Welcome to Dashboard</h1>
       </header>
     
 
       <div className="request-count-card">
-        <h2>Book Request Counts</h2>
+        <h2>Book Requests</h2>
         <div className="count-section">
           <div className="count-box">
             <h3>Pending</h3>

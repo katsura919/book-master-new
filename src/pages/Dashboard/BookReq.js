@@ -61,7 +61,7 @@ function BookReq() {
     <div className="home-container">
       <div>
         <header className="content-header">
-          <h1>All Requests</h1>
+          <h1>Requests</h1>
         </header>
       </div>
       <input
