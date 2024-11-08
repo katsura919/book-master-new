@@ -871,6 +871,106 @@ app.get('/overdue-req', (req, res) => {
     });
 });
 
+app.get('/return-req', (req, res) => {
+  const sql = `
+    SELECT 
+      br.req_id,
+      br.borrower_id,
+      br.status,
+      br.req_created,
+      br.req_approve,
+      b.first_name,
+      b.last_name,
+      b.borrower_type,
+      bb.borrow_id,
+      bb.book_id,
+      ab.title,
+      ab.isbn,
+      bb.due_date,
+      bb.book_status,
+      bb.hours_due,
+      bb.penalty
+    FROM 
+      book_req AS br
+    JOIN 
+      borrowers AS b ON br.borrower_id = b.borrower_id
+    LEFT JOIN 
+      borrowed_books AS bb ON br.req_id = bb.req_id
+    LEFT JOIN 
+      available_books AS ab ON bb.book_id = ab.book_id
+    WHERE 
+      br.status = 'Returned'
+    ORDER BY 
+      br.req_id;
+  `;
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error('Error fetching book requests:', err.message);
+      return res.status(500).json({ message: 'Error fetching book requests.' });
+    }
+
+    // Format the result to group borrowed books under their respective requests
+    const formattedResponse = rows.reduce((acc, row) => {
+      const {
+        req_id,
+        borrower_id,
+        status,
+        req_created,
+        req_approve,
+        first_name,
+        last_name,
+        borrower_type,
+        borrow_id,
+        book_id,
+        title,
+        isbn,
+        due_date,
+        book_status,
+        hours_due,
+        penalty
+      } = row;
+
+      // Check if the request already exists in the accumulator
+      let request = acc.find((r) => r.req_id === req_id);
+      if (!request) {
+        request = {
+          req_id,
+          borrower_id,
+          status,
+          req_created,
+          req_approve,
+          borrower: {
+            first_name,
+            last_name,
+            borrower_type,
+          },
+          books: [],
+        };
+        acc.push(request);
+      }
+
+      // If there's a book, add it to the request
+      if (book_id) {
+        request.books.push({
+          borrow_id,
+          book_id,
+          title,
+          isbn,
+          due_date,
+          book_status,
+          hours_due,
+          penalty
+        });
+      }
+
+      return acc;
+    }, []);
+
+    res.status(200).json(formattedResponse);
+  });
+});
+
 
 // Buttons 
   // Approve a request
@@ -986,73 +1086,57 @@ app.get('/overdue-req', (req, res) => {
     return res.status(400).json({ message: 'Request ID is required.' });
   }
 
-  // Query to get the borrower type and associated book IDs based on the request ID
-  const getBorrowerDetailsQuery = `
-    SELECT borrowers.borrower_type, book_req.borrower_id
-    FROM book_req
-    JOIN borrowers ON book_req.borrower_id = borrowers.borrower_id
-    WHERE book_req.req_id = ?
-  `;
-
-  // Define due days per borrower type
-  const rules = {
-    student: 7,   // 7 days
-    faculty: 120, // 1 semester (~120 days)
-    employee: 7,  // 7 days
-  };
-
-  db.get(getBorrowerDetailsQuery, [reqId], (err, row) => {
-    if (err) {
-      console.error('Error fetching borrower details:', err.message);
-      return res.status(500).json({ message: 'Error fetching borrower details' });
-    }
-
-    if (!row) {
-      return res.status(404).json({ message: 'Request or borrower not found.' });
-    }
-
-    const dueDays = rules[row.borrower_type];
-    
-    // Calculate the due date based on the current date
-    const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + dueDays);
-    const formattedDueDate = dueDate.toISOString().split('T')[0]; // YYYY-MM-DD
-
-    // Step 1: Update the request status and approval date
-    db.run(
-      'UPDATE book_req SET status = ?, req_approve = CURRENT_DATE WHERE req_id = ?',
-      ['Rejected', reqId],
-      function (err) {
-        if (err) {
-          console.error('Error updating book request status:', err.message);
-          return res.status(500).json({ message: 'Error updating book request status' });
-        }
-
-        // Step 2: Update the due date for all books associated with the request
-        db.run(
-          'UPDATE borrowed_books SET due_date = ? WHERE req_id = ?',
-          [formattedDueDate, reqId],
-          function (err) {
-            if (err) {
-              console.error('Error updating due date for books:', err.message);
-              return res.status(500).json({ message: 'Error updating due date for books' });
-            }
-
-            // Respond with success and the updated due date
-            res.status(200).json({
-              message: 'Book request approved successfully',
-              dueDate: formattedDueDate,
-              borrowerType: row.borrower_type,
-              borrowerId: row.borrower_id,
-            });
-          }
-        );
+  // Update the request status to "Rejected"
+  db.run(
+    'UPDATE book_req SET status = ? WHERE req_id = ?',
+    ['Rejected', reqId],
+    function (err) {
+      if (err) {
+        console.error('Error updating book request status:', err.message);
+        return res.status(500).json({ message: 'Error updating book request status' });
       }
-    );
-  });
+
+      // Check if the update affected any rows
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Request not found or already rejected.' });
+      }
+
+      // Respond with success
+      res.status(200).json({ message: 'Request status updated to Rejected successfully' });
+    }
+  );
 });
 
 
+ // Return a request
+ app.post('/return-request', (req, res) => {
+  const { reqId } = req.body;
+
+  // Validate reqId
+  if (!reqId) {
+    return res.status(400).json({ message: 'Request ID is required.' });
+  }
+
+  // Update the request status to "Rejected"
+  db.run(
+    'UPDATE book_req SET status = ? WHERE req_id = ?',
+    ['Returned', reqId],
+    function (err) {
+      if (err) {
+        console.error('Error updating book request status:', err.message);
+        return res.status(500).json({ message: 'Error updating book request status' });
+      }
+
+      // Check if the update affected any rows
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Request not found or already rejected.' });
+      }
+
+      // Respond with success
+      res.status(200).json({ message: 'Request status updated to Rejected successfully' });
+    }
+  );
+});
 
 
 
@@ -1124,7 +1208,7 @@ app.put('/book/:bookId', upload.single('cover_image'), async (req, res) => {
   const { title, isbn, author, total_copies, available_copies } = req.body;
 
   // Check if the uploaded file exceeds the size limit
-  if (req.file && req.file.size > 1 * 1024 * 1024) {
+  if (req.file && req.file.size > 1 * 2048 * 2048) {
     return res.status(413).json({ error: 'File size exceeds limit of 1MB' });
   }
 
@@ -1156,6 +1240,61 @@ app.put('/book/:bookId', upload.single('cover_image'), async (req, res) => {
     res.status(500).json({ error: 'An error occurred while updating the book' });
   }
 });
+
+// Endpoint to get borrowers for a specific book
+app.get('/book-requests/:bookId', (req, res) => {
+  const { bookId } = req.params;
+
+  // Wrapping db.all in a Promise to enable .then() and .catch()
+  new Promise((resolve, reject) => {
+    db.all(`
+      SELECT 
+        br.req_id,
+        br.borrower_id,
+        b.first_name,
+        b.last_name,
+        b.email,
+        b.contact_number,
+        b.borrower_type,
+        br.status,
+        br.req_created,
+        br.req_approve,
+        br.overdue_days
+      FROM book_req br
+      JOIN borrowers b ON br.borrower_id = b.borrower_id
+      JOIN borrowed_books bb ON br.req_id = bb.req_id
+      WHERE bb.book_id = ? 
+      AND br.status NOT IN ('Pending', 'Rejected') 
+    `, [bookId], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  })
+  .then((result) => {
+    // Log the result to check if it's correct
+    console.log('Fetched book requests:', result);
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No requests found for this book' });
+    }
+    res.json(result);
+  })
+  .catch((error) => {
+    console.error('Error fetching book requests:', error);
+    res.status(500).json({ error: 'An error occurred while fetching book requests' });
+  });
+});
+
+
+
+
+
+
+
+
 
 // Cron job that runs every hour
 cron.schedule('0 * * * *', () => {

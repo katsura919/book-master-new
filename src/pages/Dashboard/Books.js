@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import './Books.css';
-import AddBookForm from './components/AddBooksForm';
-import AddBookModal from "./components/AddBookModal";
-import EditBookModal from "./components/EditBookModal";
+import AddBookForm from './Modals/AddBooksForm';
+import AddBookModal from "./Modals/AddBookModal";
+import EditBookModal from "./Modals/EditBookModal";
+import BookRequestsModal from "./Modals/BookRequestsModal";  // Import the updated modal
 
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState(null);
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -26,6 +27,8 @@ const Books = () => {
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isRequestsModalOpen, setRequestsModalOpen] = useState(false);  // Track requests modal visibility
+  const [bookIdForRequests, setBookIdForRequests] = useState(null);  // Track the selected book ID for requests
 
   const handleOpenAddModal = () => setAddModalOpen(true);
   const handleCloseAddModal = () => setAddModalOpen(false);
@@ -39,6 +42,13 @@ const Books = () => {
     setEditModalOpen(false);
     setSelectedBook(null);
   };
+
+  const handleOpenRequestsModal = (bookId) => {
+    setBookIdForRequests(bookId);  // Set the selected book ID
+    setRequestsModalOpen(true);     // Open the requests modal
+  };
+
+  const handleCloseRequestsModal = () => setRequestsModalOpen(false);
 
   const handleSaveEdit = async (updatedBook) => {
     try {
@@ -69,6 +79,8 @@ const Books = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
+
+  
   return (
     <div className="book-container">
       <h1 className="books-header">Books</h1>
@@ -84,6 +96,12 @@ const Books = () => {
         onSave={handleSaveEdit}
       />
 
+      <BookRequestsModal
+        isOpen={isRequestsModalOpen}
+        onClose={handleCloseRequestsModal}
+        bookId={bookIdForRequests}  // Pass the selected book ID to the modal
+      />
+
       <div>
         <input
           type="text"
@@ -93,8 +111,8 @@ const Books = () => {
         />
       </div>
 
-      <div>
-        <table>
+      <div className="table-responsive">
+        <table className="dashboard-table">
           <thead>
             <tr>
               <th>Book ID</th>
@@ -103,25 +121,31 @@ const Books = () => {
               <th>Author</th>
               <th>Total Copies</th>
               <th>Available Copies</th>
+              <th>Show Requests</th>
             </tr>
           </thead>
           <tbody>
             {currentBooks.map((book) => (
               <tr key={book.book_id}>
-                <td onClick={() => handleOpenEditModal(book)} style={{ cursor: "pointer", color: "blue" }}>
+                <td >
                   {book.book_id}
                 </td>
-                <td>{book.title}</td>
+                <td onClick={() => handleOpenEditModal(book)} style={{ cursor: "pointer", color: "blue" }}>{book.title}</td>
                 <td>{book.isbn}</td>
                 <td>{book.author}</td>
                 <td>{book.total_copies}</td>
                 <td>{book.available_copies}</td>
+                <td>
+                  <button onClick={() => handleOpenRequestsModal(book.book_id)}>
+                    Show Requests
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div>
+        <div className="pagination">
           <button onClick={handlePrevPage} disabled={currentPage === 1}>
             Previous
           </button>

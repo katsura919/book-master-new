@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './BookReq.css';
-import RequestModal from './components/RequestModal'; // Import the Modal component
+import RequestModal from './Modals/RequestModal'; // Import the Modal component
 
-const ENTRIES_PER_PAGE = 15;
+const ENTRIES_PER_PAGE = 10;
 
 function BookReq() {
   const [bookRequests, setBookRequests] = useState([]);
@@ -56,14 +56,58 @@ function BookReq() {
     setSelectedRequest(null);
   };
 
+  
+  const [requests, setRequest] = useState({
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    overdue: 0,
+  });
+
+  const [counts, setCounts] = useState({ todayCount: 0, yesterdayCount: 0, totalCount: 0});
+
+  const fetchRequestCounts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/request-counts'); // Adjust the URL as needed
+      setRequest(response.data);
+    } catch (error) {
+      console.error('Error fetching request counts:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequestCounts();
+  }, []);
 
   return (
     <div className="home-container">
+      
       <div>
         <header className="content-header">
           <h1>Requests</h1>
         </header>
       </div>
+
+
+      <div className='first-layer'>
+            <div className="count-box">
+              <h3>Pending</h3>
+              <p>{requests.pending}</p>
+            </div>
+            <div className="count-box">
+              <h3>Approved</h3>
+              <p>{requests.approved}</p>
+            </div>
+            <div className="count-box">
+              <h3>Overdue</h3>
+              <p>{requests.rejected}</p>
+            </div>
+            <div className="count-box">
+              <h3>Rejected</h3>
+              <p>{requests.overdue}</p>
+            </div>
+        </div>
+
       <input
         type="text"
         placeholder="Search by Name"
@@ -140,6 +184,20 @@ function BookReq() {
             }}
           />
           <span className="name">Overdue</span>
+        </label>
+
+        <label className="radio">
+          <input
+            type="radio"
+            name="radio"
+            value="Return"
+            checked={selectedOption === "Return"}
+            onChange={(e) => {
+              handleChange(e);
+              setFetchType('return-req');
+            }}
+          />
+          <span className="name">Returned</span>
         </label>
       </div>
 
