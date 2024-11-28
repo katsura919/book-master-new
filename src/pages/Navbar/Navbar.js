@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../redux/authSlice';
+import logo from '../../assets/logo.png'
 import './Navbar.css'; 
 
 import Search from './component/Search';
@@ -17,11 +18,21 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
+            <div>
+                <img
+                    src= {logo}
+                    alt="Business Illustration"
+                    className="logo"
+                />
+            </div>
             <Search className="search-bar"/>
             <ul className="navbar-list">
                 
                 <li className="navbar-item">
                     <Link className="navbar-link" to="/">Home</Link>
+                </li>
+                <li className="navbar-item">
+                    <Link className="navbar-link" to="/allbooks">Books</Link>
                 </li>
                 
                 {isAuthenticated ? (

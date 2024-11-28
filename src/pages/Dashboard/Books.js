@@ -12,16 +12,15 @@ const Books = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState(null);
   const itemsPerPage = 5;
-
+  const fetchBooks = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/book-list");
+      setBooks(response.data);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
+  };
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/book-list");
-        setBooks(response.data);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      }
-    };
     fetchBooks();
   }, []);
 
@@ -79,7 +78,10 @@ const Books = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-
+  const handleDelete = () => {
+    fetchBooks();// Refresh the book list after deleting a book
+    
+  };
   
   return (
     <div className="book-container">
@@ -94,6 +96,7 @@ const Books = () => {
         onClose={handleCloseEditModal}
         book={selectedBook}
         onSave={handleSaveEdit}
+        onDelete={handleDelete}
       />
 
       <BookRequestsModal

@@ -1,0 +1,15 @@
+.search-page-body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.search-header{
+    font-size: 20px;
+    color: #4e4e4e;
+}
+.search-pagination{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+}

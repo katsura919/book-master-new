@@ -1,114 +1,164 @@
-/* Modal.css */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-  }
-  
-  .modal-content h2 {
-    margin: 0 0 10px;
-  }
-  
-  .modal-content button {
-    margin-top: 10px;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
 
-  
-  
-  .books-table th,
-  .books-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-    font-size: 0.8rem;
-  }
-  
-  .books-table th {
-    background-color: #f2f2f2;
-  }
-  
-  .books-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .books-table tr:hover {
-    background-color: #f1f1f1;
-  }
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  font-family: Arial, sans-serif;
+}
 
-  .return-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .return-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Disabled style */
-  .return-button.disabled {
-    background-color: #d3d3d3;
-    color: #888888;
-    cursor: not-allowed;
-  }
+.modal-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  
+.books-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
 
-  
-  button {
-    border: none;
-    cursor: pointer;
-    border-radius: 8px;
-    width: 80px;
-    height: 45px;
-    transition: 0.3s;
-    margin: 5px;
-  }
-  
-  .approve-button {
-    background-color: #32cf47;
-  }
-  .reject-button {
-    background-color: #f63b3b;
-  }
-  .reject-button:hover {
-    background-color: #f63b3b;
-    box-shadow: 0 0 0 5px #f63b3b5f;
-  }
-  
-  .approve-button:hover {
-    background-color: #32cf47;
-    box-shadow: 0 0 0 5px #4bf63b5f;
-    color: #fff;
-  }
-  
-  .approved:disabled,
-  .rejected:disabled,
-  .returned:disabled,
-  .return-book:disabled {
-    color: black;
-    background-color: grey;
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    pointer-events: none; /* Prevent hover effects */
-    /* Remove any hover effect styles here if needed */
-  }
-  
-  
+.books-table th, 
+.books-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.books-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.books-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.books-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.books-table td button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.return-book {
+  background-color: #4caf50; /* Green */
+}
+
+.return-book[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.approved {
+  background-color: #008cba; /* Blue */
+}
+
+.approved[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.rejected {
+  background-color: #f44336; /* Red */
+}
+
+.rejected[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.returned {
+  background-color: #ff9800; /* Orange */
+}
+
+.returned[disabled] {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button {
+  padding: 8px 12px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  background-color: #007bff;
+}
+
+button:hover:not([disabled]) {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Dropdown styles */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 120px;
+  padding: 5px 0;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: none;
+  background-color: #ffffff;
+  color: #333;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f2f2f2;
+}
+
+.dropdown-menu button:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}

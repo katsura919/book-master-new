@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import axios from "axios";
 
 const Books = () => {
@@ -13,6 +14,26 @@ const Books = () => {
   const [bookData, setBookData] = useState(initialBookData);
   const [coverImage, setCoverImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(""); // For error handling
+  const [categories, setCategories] = useState([]); // Available categories
+  const [selectedCategories, setSelectedCategories] = useState([]); // Selected categories
+
+  // Fetch categories from the backend
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/categories"); // Adjust endpoint as needed
+        const options = response.data.map((category) => ({
+          value: category.category_id,
+          label: category.name,
+        }));
+        setCategories(options); // Format categories for react-select
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,14 +44,18 @@ const Books = () => {
     const file = e.target.files[0];
 
     // Check if the file is an image
-    if (file && !file.type.startsWith('image/')) {
+    if (file && !file.type.startsWith("image/")) {
       setErrorMessage("Please select a valid image file."); // Set error message
-      e.target.value = ''; // Clear the file input
-      setCoverImage(null);  // Reset cover image state
+      e.target.value = ""; // Clear the file input
+      setCoverImage(null); // Reset cover image state
     } else {
-      setErrorMessage(''); // Clear error message if file is valid
-      setCoverImage(file);  // Set the cover image
+      setErrorMessage(""); // Clear error message if file is valid
+      setCoverImage(file); // Set the cover image
     }
+  };
+
+  const handleCategoryChange = (selectedOptions) => {
+    setSelectedCategories(selectedOptions); // Update selected categories
   };
 
   const handleSubmit = async (e) => {
@@ -43,6 +68,10 @@ const Books = () => {
       formData.append("cover_image", coverImage);
     }
 
+    // Append selected categories as an array of IDs
+    const categoryIds = selectedCategories.map((category) => category.value);
+    formData.append("categories", JSON.stringify(categoryIds));
+
     try {
       const response = await axios.post("http://localhost:5000/books", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -52,6 +81,7 @@ const Books = () => {
       // Reset fields after successful submission
       setBookData(initialBookData);
       setCoverImage(null); // Reset cover image
+      setSelectedCategories([]); // Reset categories
     } catch (error) {
       console.error("Error adding book:", error);
       alert("Failed to add book");
@@ -106,15 +136,25 @@ const Books = () => {
           onChange={handleChange}
           required
         />
-        
-        {/* Image input with error message */}
         <input
           type="file"
           name="cover_image"
           accept="image/*"
           onChange={handleImageChange}
         />
-        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Error message */}
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+
+        {/* Category selection with react-select */}
+        <div>
+          <label>Select Categories:</label>
+          <Select
+            isMulti
+            options={categories} // Pass formatted category options
+            onChange={handleCategoryChange} // Handle selection
+            value={selectedCategories} // Selected categories
+            placeholder="Search and select categories"
+          />
+        </div>
 
         <button type="submit">Add Book</button>
       </form>

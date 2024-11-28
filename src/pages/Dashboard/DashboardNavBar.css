@@ -1,52 +1,113 @@
-/* Sidebar Container */
-.dashboard-sidebar {
-    width: 170px;
+/* src/components/CollapsibleSidebar.css */
+.sidebar {
     height: 100vh;
-    background-color: #f5f5f5;
-    padding: 20px;
+    width: 300px;
+    background-color: white;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 0;
     left: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); Optional: Add a slight shadow */
 }
 
-/* Unordered List for Links */
-.dashboard-sidebar ul {
+.sidebar.collapsed {
+    width: 55px;
+}
+
+.header-wrapper{
+    width: 90%;
+    display: flex;
+    margin-bottom: 10px;
+    padding: 10px;
+
+}
+    
+    
+.logo-dashboard{
+    width: 200px; 
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+
+}
+.logo-close-btn{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.dash-close-btn {
+    background: none;
+    width: 50px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    align-self: flex-end;
+    color: black;
+    margin-left: 0;
+}
+
+.sidebar-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dash-logo {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    color: #333;
+}
+
+.dash-nav {
     list-style: none;
     padding: 0;
     margin: 0;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+}
+
+.dash-list {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
 }
 
-/* Individual Link Styling */
-.dashboard-sidebar a {
-    color: rgb(46, 46, 46);
+li:hover {
+    background-color: #e0e4ea;
+}
+
+.dash-link {
     text-decoration: none;
-    font-size: 18px;
-    padding: 12px 15px;
-    border-radius: 4px;
-    transition: background-color 0.3s, color 0.3s;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
 }
 
-/* Hover Effect for Links */
-.dashboard-sidebar a:hover {
-    background-color: #444;
-    color: #ddd;
+span{
+    font-family: "Poppins", sans-serif;
+}
+.sidebar.collapsed .logo-dashboard {
+    display: none;
 }
 
-/* Active Link Style (Optional) */
-.dashboard-sidebar a.active {
-    background-color: #555;
-    color: #fff;
+.sidebar.collapsed .toggle-btn {
+    align-self: center;
 }
 
-/* Main Content Styling to Avoid Overlap */
-.main-content {
-    margin-left: 260px; /* Leaves space for the sidebar */
-    padding: 20px;
+.sidebar.collapsed .dash-logo {
+    display: none;
 }

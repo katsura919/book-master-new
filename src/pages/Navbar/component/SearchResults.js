@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Footer from '../../LandingPage/component/Footer';
+import './SearchResult.css';
 
 const ENTRIES_PER_PAGE = 2; // Number of entries per page
 
@@ -53,8 +55,10 @@ const SearchResults = () => {
   };
 
   return (
+    <div>
     <StyledWrapper>
-      <h1>Search Results for "{query}"</h1>
+      <div className='search-page-body'>
+      <h1 className='search-header'>Search Results for "{query}"</h1>
 
       {/* Loading Indicator */}
       {loading && <p>Loading...</p>}
@@ -82,7 +86,7 @@ const SearchResults = () => {
       </div>
 
       {/* Pagination Controls */}
-      <div style={{ marginTop: '20px' }}>
+      <div className='search-pagination'>
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
@@ -97,7 +101,12 @@ const SearchResults = () => {
           Next
         </button>
       </div>
+
+      
+      </div>
     </StyledWrapper>
+    <Footer/>
+    </div>
   );
 };
 

@@ -17,7 +17,7 @@ import BookReq from './pages/Dashboard/BookReq';
 import SearchResults from './pages/Navbar/component/SearchResults';
 import Books from './pages/Dashboard/Books';
 import BookDetails from './pages/Navbar/component/BookDetails';
-
+import AllBooks from './pages/LandingPage/AllBooks';
 const App = () => {
 
     
@@ -31,6 +31,7 @@ const App = () => {
                     <Route path="/search" element={<SearchResults />} />
                     <Route path="/login" element={<Login/>} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/allbooks" element={<AllBooks />} />
                     <Route path="/borrow" element={<BookBorrowForm />} />
                     <Route path="/bookdetails/:bookId" element={<BookDetails />} />
                 </Route>

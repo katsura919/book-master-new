@@ -247,7 +247,12 @@ function BookReq() {
         </button>
       </div>
       {/* Modal for request details */}
-      <RequestModal isOpen={isModalOpen} onClose={closeModal} requestID={selectedRequest?.req_id} />
+      <RequestModal 
+      isOpen={isModalOpen} 
+      onClose={closeModal} 
+      requestID={selectedRequest?.req_id}
+      refreshList={fetchBookRequests} // Pass the refresh function
+      />
     </div>
   );
 }

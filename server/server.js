@@ -19,8 +19,7 @@ app.use(bodyParser.json());
 // Multer setup for image uploads
 const storage = multer.memoryStorage(); // Store image in memory
 const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1 * 1024 * 1024 } // Limit file size to 1MB
+  storage: storage
 });
 
 
@@ -44,6 +43,7 @@ db.serialize(() => {
         borrower_id VARCHAR(20) PRIMARY KEY,
         first_name TEXT NOT NULL,
         last_name TEXT NOT NULL,
+        department TEXT,
         email VARCHAR(100) NOT NULL,
         contact_number VARCHAR(100) NOT NULL,
         borrower_type TEXT NOT NULL 
@@ -88,6 +88,23 @@ db.serialize(() => {
         total_copies INTEGER NOT NULL,
         available_copies INTEGER NOT NULL,
         cover_image BLOB
+      );
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS book_categories (
+          book_id INTEGER NOT NULL,
+          category_id INTEGER NOT NULL,
+          PRIMARY KEY (book_id, category_id),
+          FOREIGN KEY (book_id) REFERENCES available_books(book_id) ON DELETE CASCADE,
+          FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+      );
+    `);
+
+    db.run(`
+      CREATE TABLE IF NOT EXISTS categories (
+          category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name VARCHAR(100) UNIQUE NOT NULL
       );
     `);
   });
@@ -141,6 +158,54 @@ const authenticateToken = (req, res, next) => {
       res.json({ results });
     });
   });
+
+  app.get("/all-books", (req, res) => {
+    const { category_id, page = 1, limit = 10 } = req.query;
+  
+    const offset = (page - 1) * limit;
+  
+    let baseQuery = `
+      SELECT available_books.*, GROUP_CONCAT(categories.name) AS categories
+      FROM available_books
+      LEFT JOIN book_categories ON available_books.book_id = book_categories.book_id
+      LEFT JOIN categories ON book_categories.category_id = categories.category_id
+    `;
+  
+    const filters = [];
+    const queryParams = [];
+  
+    if (category_id) {
+      filters.push(`book_categories.category_id = ?`);
+      queryParams.push(category_id);
+    }
+  
+    if (filters.length > 0) {
+      baseQuery += ` WHERE ${filters.join(" AND ")}`;
+    }
+  
+    baseQuery += ` GROUP BY available_books.book_id LIMIT ? OFFSET ?`;
+    queryParams.push(parseInt(limit), parseInt(offset));
+  
+    db.all(baseQuery, queryParams, (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).json({ error: "Failed to fetch books" });
+      }
+  
+      // Map rows to include Base64 encoding for the cover image
+      const booksWithImages = rows.map((row) => {
+        return {
+          ...row,
+          cover_image: row.cover_image
+            ? row.cover_image.toString("base64")
+            : null, // Encode the BLOB as Base64 or return null if no image
+        };
+      });
+  
+      res.json({ books: booksWithImages });
+    });
+  });
+  
   
     // Get book details by ID
   app.get('/books/:id', (req, res) => {
@@ -233,91 +298,93 @@ app.get('/available-books', (req, res) => {
 
 
   // Request a book
- app.post('/borrow-book', (req, res) => {
-  const { studentId, firstName, lastName, email, contactNumber, borrowerType, books } = req.body;
-
-  // Validate required fields
-  if (!studentId || !firstName || !lastName || !email || !contactNumber || !borrowerType || !books.length) {
-    return res.status(400).json({ message: 'All fields are required.' });
-  }
-
-  // Validate borrower type
-  const validTypes = ['student', 'faculty', 'employee'];
-  if (!validTypes.includes(borrowerType)) {
-    return res.status(400).json({ message: 'Invalid borrower type.' });
-  }
-
-  // Define book limits per borrower type
-  const rules = {
-    student: { maxBooks: 3, dueDays: 7 },
-    faculty: { maxBooks: 10, dueDays: 120 }, // 1 semester (~120 days)
-    employee: { maxBooks: 10, dueDays: 7 },
-  };
-
-  const { maxBooks } = rules[borrowerType];
-
-  // Enforce book limit
-  if (books.length > maxBooks) {
-    return res.status(400).json({ message: `${borrowerType}s can only borrow up to ${maxBooks} books.` });
-  }
-
-  // Step 1: Insert or Update Borrower Info in `borrowers` Table
-  db.run(
-    `INSERT INTO borrowers (borrower_id, first_name, last_name, email, contact_number, borrower_type) 
-     VALUES (?, ?, ?, ?, ?, ?)
-     ON CONFLICT(borrower_id) DO UPDATE SET 
-     first_name = excluded.first_name, 
-     last_name = excluded.last_name, 
-     email = excluded.email, 
-     contact_number = excluded.contact_number,
-     borrower_type = excluded.borrower_type`,
-    [studentId, firstName, lastName, email, contactNumber, borrowerType],
-    function (err) {
-      if (err) {
-        console.error('Error inserting/updating borrower:', err.message);
-        return res.status(500).json({ message: 'Error saving borrower info' });
-      }
-
-      // Step 2: Insert Borrow Request in `book_req` Table
-      db.run('INSERT INTO book_req (borrower_id) VALUES (?)', [studentId], function (err) {
-        if (err) {
-          console.error('Error creating borrow request:', err.message);
-          return res.status(500).json({ message: 'Error creating borrow request' });
-        }
-
-        const borrowRequestId = this.lastID;
-
-        // Step 3: Bulk Insert Books into `borrowed_books` Table
-        const insertBooks = books.map((book) => {
-          return new Promise((resolve, reject) => {
-            console.log('Inserting book:', book.value); // Ensure this logs the correct book ID
-            db.run(
-              'INSERT INTO borrowed_books (req_id, book_id, due_date) VALUES (?, ?, ?)',
-              [borrowRequestId, book.value, null],  // Use book.value instead of book.book_id
-              function (err) {
-                if (err) {
-                  console.error('Error inserting borrowed book:', err.message);
-                  return reject(err);
-                }
-                resolve();
-              }
-            );
-          });
-        });
-
-        // Wait for all books to be inserted
-        Promise.all(insertBooks)
-          .then(() => {
-            res.status(201).json({ message: 'Borrow request successfully registered.' });
-          })
-          .catch((err) => {
-            console.error('Error inserting books:', err.message);
-            res.status(500).json({ message: 'Error registering borrowed books.' });
-          });
-      });
+  app.post('/borrow-book', (req, res) => {
+    const { studentId, firstName, lastName, email, contactNumber, borrowerType, department, books } = req.body;
+  
+    // Validate required fields
+    if (!studentId || !firstName || !lastName || !email || !contactNumber || !borrowerType || !department || !books.length) {
+      return res.status(400).json({ message: 'All fields are required.' });
     }
-  );
-});
+  
+    // Validate borrower type
+    const validTypes = ['student', 'faculty', 'employee'];
+    if (!validTypes.includes(borrowerType)) {
+      return res.status(400).json({ message: 'Invalid borrower type.' });
+    }
+  
+    // Define book limits per borrower type
+    const rules = {
+      student: { maxBooks: 3, dueDays: 7 },
+      faculty: { maxBooks: 10, dueDays: 120 }, // 1 semester (~120 days)
+      employee: { maxBooks: 10, dueDays: 7 },
+    };
+  
+    const { maxBooks } = rules[borrowerType];
+  
+    // Enforce book limit
+    if (books.length > maxBooks) {
+      return res.status(400).json({ message: `${borrowerType}s can only borrow up to ${maxBooks} books.` });
+    }
+  
+    // Step 1: Insert or Update Borrower Info in `borrowers` Table
+    db.run(
+      `INSERT INTO borrowers (borrower_id, first_name, last_name, email, contact_number, borrower_type, department) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(borrower_id) DO UPDATE SET 
+       first_name = excluded.first_name, 
+       last_name = excluded.last_name, 
+       email = excluded.email, 
+       contact_number = excluded.contact_number,
+       borrower_type = excluded.borrower_type,
+       department = excluded.department`,
+      [studentId, firstName, lastName, email, contactNumber, borrowerType, department], // Include department
+      function (err) {
+        if (err) {
+          console.error('Error inserting/updating borrower:', err.message);
+          return res.status(500).json({ message: 'Error saving borrower info' });
+        }
+  
+        // Step 2: Insert Borrow Request in `book_req` Table
+        db.run('INSERT INTO book_req (borrower_id) VALUES (?)', [studentId], function (err) {
+          if (err) {
+            console.error('Error creating borrow request:', err.message);
+            return res.status(500).json({ message: 'Error creating borrow request' });
+          }
+  
+          const borrowRequestId = this.lastID;
+  
+          // Step 3: Bulk Insert Books into `borrowed_books` Table
+          const insertBooks = books.map((book) => {
+            return new Promise((resolve, reject) => {
+              console.log('Inserting book:', book.value); // Ensure this logs the correct book ID
+              db.run(
+                'INSERT INTO borrowed_books (req_id, book_id, due_date) VALUES (?, ?, ?)',
+                [borrowRequestId, book.value, null],  // Use book.value instead of book.book_id
+                function (err) {
+                  if (err) {
+                    console.error('Error inserting borrowed book:', err.message);
+                    return reject(err);
+                  }
+                  resolve();
+                }
+              );
+            });
+          });
+  
+          // Wait for all books to be inserted
+          Promise.all(insertBooks)
+            .then(() => {
+              res.status(201).json({ message: 'Borrow request successfully registered.' });
+            })
+            .catch((err) => {
+              console.error('Error inserting books:', err.message);
+              res.status(500).json({ message: 'Error registering borrowed books.' });
+            });
+        });
+      }
+    );
+  });
+  
 
 
 
@@ -1138,7 +1205,52 @@ app.get('/return-req', (req, res) => {
   );
 });
 
+// Delete a Request
+app.delete('/delete-request/:reqId', async (req, res) => {
+  const { reqId } = req.params;
 
+  try {
+    // Check if the request exists
+    const requestExists = await db.get(
+      'SELECT req_id FROM book_req WHERE req_id = ?',
+      [reqId]
+    );
+
+    if (!requestExists) {
+      return res.status(404).json({ error: 'Request not found' });
+    }
+
+    // Delete related borrowed book records if applicable
+    await db.run('DELETE FROM borrowed_books WHERE req_id = ?', [reqId]);
+
+    // Delete the request itself
+    await db.run('DELETE FROM book_req WHERE req_id = ?', [reqId]);
+
+    res.json({ message: 'Request deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting request:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the request' });
+  }
+});
+
+app.delete('/delete-book/:bookId', async (req, res) => {
+  const { bookId } = req.params;
+
+  try {
+    // Run the delete query
+    const result = await db.run('DELETE FROM available_books WHERE book_id = ?', [bookId]);
+
+    // Check if any rows were affected (book exists)
+    if (result.changes === 0) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    res.json({ message: 'Book deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting book:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the book' });
+  }
+});
 
  //Show all books
  app.get('/book-list', (req, res) => {
@@ -1155,15 +1267,41 @@ app.get('/return-req', (req, res) => {
   );
 });
 
+// API to fetch categories
+app.get("/categories", (req, res) => {
+  const query = "SELECT * FROM categories";
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Error fetching categories:", err.message);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    } else {
+      res.json(rows);
+    }
+  });
+});
 // Add new book with image
 app.post("/books", upload.single("cover_image"), (req, res) => {
-  const { title, isbn, author, total_copies, available_copies } = req.body;
+  const { title, isbn, author, total_copies, available_copies, categories } = req.body;
   const coverImage = req.file ? req.file.buffer : null;
 
+  // Parse categories from JSON string (if necessary)
+  let categoryIds = [];
+  if (categories) {
+    try {
+      categoryIds = JSON.parse(categories);  // Parse the category IDs string to array
+    } catch (err) {
+      console.error("Error parsing categories:", err);
+      return res.status(400).json({ error: "Invalid category data" });
+    }
+  }
+
+  // SQL query to insert book into available_books table
   const sql = `
     INSERT INTO available_books (title, isbn, author, total_copies, available_copies, cover_image)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
+
+  // Insert the book into the database
   db.run(
     sql,
     [title, isbn, author, total_copies, available_copies, coverImage],
@@ -1172,10 +1310,35 @@ app.post("/books", upload.single("cover_image"), (req, res) => {
         console.error(err.message);
         return res.status(500).json({ error: "Failed to add book" });
       }
-      res.status(201).json({ message: "Book added successfully", book_id: this.lastID });
+
+      // Get the book ID of the newly inserted book
+      const bookId = this.lastID;
+
+      // Ensure categories are an array and insert into book_categories
+      if (categoryIds.length > 0) {
+        const insertCategorySql = `
+          INSERT INTO book_categories (book_id, category_id)
+          VALUES (?, ?)
+        `;
+
+        // Insert categories associated with the book
+        categoryIds.forEach((categoryId) => {
+          db.run(insertCategorySql, [bookId, categoryId], (err) => {
+            if (err) {
+              console.error("Error inserting category:", err.message);
+              return res.status(500).json({ error: "Failed to associate categories with the book" });
+            }
+          });
+        });
+      }
+
+      // Send response once everything is done
+      res.status(201).json({ message: "Book added successfully", book_id: bookId });
     }
   );
 });
+
+
 
 app.get("/book/:bookId", (req, res) => {
   const { bookId } = req.params;

@@ -12,7 +12,15 @@ function BookBorrowForm() {
   const [contactNumber, setContactNumber] = useState('');
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [availableBooks, setAvailableBooks] = useState([]);
- 
+  const [department, setDepartment] = useState(null); // New state for department
+  console.log(department);
+  const departmentOptions = [
+    { value: 'Computer Science', label: 'Computer Science' },
+    { value: 'Mathematics', label: 'Mathematics' },
+    { value: 'Physics', label: 'Physics' },
+    { value: 'Engineering', label: 'Engineering' },
+    { value: 'Biology', label: 'Biology' },
+  ];
 
   // Fetch available books on component mount
   useEffect(() => {
@@ -49,7 +57,7 @@ function BookBorrowForm() {
       return;
     }
 
-    if (!studentId || !firstName || !lastName || !email || !contactNumber) {
+    if (!studentId || !firstName || !lastName || !email || !contactNumber || !department) {
       alert('Please fill in all fields.');
       return;
     }
@@ -62,6 +70,7 @@ function BookBorrowForm() {
         email,
         contactNumber,
         borrowerType,
+        department: department.value,
         books: selectedBooks,
       });
 
@@ -84,10 +93,10 @@ function BookBorrowForm() {
     setEmail('');
     setContactNumber('');
     setSelectedBooks([]);
+    setDepartment(null);
   };
 
   // Options for the searchable dropdown
-  
   const bookOptions = availableBooks.map((book) => ({
     value: book.book_id,
     label: `${book.title} (ISBN: ${book.isbn}) - ${book.available_copies} available`,
@@ -98,7 +107,7 @@ function BookBorrowForm() {
   };
 
   return (
-    <form className="borrow-form"onSubmit={handleSubmit}>
+    <form className="borrow-form" onSubmit={handleSubmit}>
       <h2>Book Check-Out Form</h2>
 
       <label>
@@ -160,6 +169,16 @@ function BookBorrowForm() {
         />
       </label>
 
+      <label>
+        Department:
+        <Select
+          options={departmentOptions}
+          onChange={setDepartment}
+          value={department}
+          placeholder="Select Department"
+        />
+      </label>
+
       <h3>Books to Borrow:</h3>
       <Select
         isMulti
@@ -169,7 +188,9 @@ function BookBorrowForm() {
         placeholder="Search and select books"
       />
 
-      <button className='submit-req-btn' type="submit">Borrow Books</button>
+      <button className="submit-req-btn" type="submit">
+        Borrow Books
+      </button>
     </form>
   );
 }

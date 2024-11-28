@@ -1,14 +1,14 @@
-// components/EditBookModal.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./EditBookModal.css";
 
-const EditBookModal = ({ isOpen, onClose, book, onSave }) => {
+const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
   const [bookData, setBookData] = useState(book);
   const [isLoading, setIsLoading] = useState(true);
   const [coverImage, setCoverImage] = useState(null);
   const [coverImagePreview, setCoverImagePreview] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+
   useEffect(() => {
     const fetchBookData = async () => {
       if (isOpen && book?.book_id) {
@@ -68,10 +68,24 @@ const EditBookModal = ({ isOpen, onClose, book, onSave }) => {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this book?");
+    if (confirmDelete) {
+      try {
+        const response = await axios.delete(`http://localhost:5000/delete-book/${bookData.book_id}`);
+        if (response.status === 200) {
+          console.log("Book deleted successfully");
+          onDelete(); // Callback to refresh book list in parent
+          onClose(); // Close the modal
+        }
+      } catch (error) {
+        console.error("Error deleting book:", error);
+      }
+    }
+  };
+
   if (isLoading) return <div className="modal-overlay"><div className="modal-content">Loading...</div></div>;
 
-
-  
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -99,16 +113,19 @@ const EditBookModal = ({ isOpen, onClose, book, onSave }) => {
         <label>
           Cover Image:
           <input
-        type="file"
-        name="cover_image"
-        accept="image/*"
-        onChange={handleImageChange}
-      />
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}  {/* Error message */}
-      <img src={coverImagePreview} alt="Cover Preview" style={{ maxWidth: '200px' }} /> {/* Image Preview */}
+            type="file"
+            name="cover_image"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Error message */}
+          <img src={coverImagePreview} alt="Cover Preview" style={{ maxWidth: '200px' }} /> {/* Image Preview */}
         </label>
         <button onClick={handleSave}>Save</button>
         <button onClick={onClose}>Cancel</button>
+        <button onClick={handleDelete} style={{ backgroundColor: 'red', color: 'white' }}>
+          Delete Book
+        </button>
       </div>
     </div>
   );
