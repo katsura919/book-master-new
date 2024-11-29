@@ -2,12 +2,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const apiBaseUrl = 'https://book-master-server.onrender.com';
 // Async Thunks for Login and Register actions
 export const login = createAsyncThunk(
     'auth/login',
     async ({ username, password, navigate}, { rejectWithValue }) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { username, password });
+            const response = await axios.post(`${apiBaseUrl}/api/login`, { username, password });
             const { token, id, username: loggedInUser } = response.data;
 
             localStorage.setItem('token', token); // Store token in localStorage
@@ -23,7 +24,7 @@ export const register = createAsyncThunk(
     'auth/register',
     async ({ firstName, lastName, username, password, navigate }, { rejectWithValue }) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/register', { firstName, lastName, username, password });
+            const response = await axios.post(`${apiBaseUrl}/api/register`, { firstName, lastName, username, password });
             const { token, id, username: registeredUser } = response.data;
 
             localStorage.setItem('token', token); // Store token in localStorage
