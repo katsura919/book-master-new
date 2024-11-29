@@ -8,7 +8,7 @@ import './SearchResult.css';
 const ENTRIES_PER_PAGE = 2; // Number of entries per page
 
 const SearchResults = () => {
-  const apiBaseUrl = `${apiBaseUrl}/search`;
+  const apiBaseUrl = 'https://book-master-server.onrender.com';
   const [books, setBooks] = useState([]); // Search results
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const SearchResults = () => {
       setLoading(true);
       setError('');
 
-      const response = await axios.get('http://localhost:5000/search', {
+      const response = await axios.get(`${apiBaseUrl}/search`, {
         params: {
           query: query,
         },
