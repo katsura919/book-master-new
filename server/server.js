@@ -9,7 +9,7 @@ const app = express();
 const cron = require('node-cron');
 const multer = require("multer");
 
-
+const port = 5000;
 const SECRET_KEY = 'your-secret-key'; // Replace with a secure key
 const db = new sqlite3.Database('bm.db'); 
 
@@ -1637,6 +1637,6 @@ app.get('/req/:id', (req, res) => {
 
 
 // Start the server
-app.listen(5000, () => {
+app.listen(port, () => {
     console.log('Server is running on http://localhost:5000');
 });
