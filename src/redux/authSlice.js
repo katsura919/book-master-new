@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const apiBaseUrl = 'https://book-master-server.onrender.com';
+const apiBaseUrl = 'http://localhost:5000';
 // Async Thunks for Login and Register actions
 export const login = createAsyncThunk(
     'auth/login',

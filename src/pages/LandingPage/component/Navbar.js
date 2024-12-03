@@ -2,11 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../redux/authSlice';
-import logo from '../../assets/logo.png'
+import { logout } from '../../../redux/authSlice';
+import logo from '../../../assets/logo.png'
 import './Navbar.css'; 
 
-import Search from './component/Search';
+import Search from './Searchbar';
 
 const Navbar = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -25,7 +25,8 @@ const Navbar = () => {
                     className="logo"
                 />
             </div>
-            <Search className="search-bar"/>
+            <div><Search className="search-bar"/></div>
+            
             <ul className="navbar-list">
                 
                 <li className="navbar-item">

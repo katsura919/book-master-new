@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select'; // Import React-Select
-import './BookBorrowForm.css'; // Your CSS
+import './BorrowFormPage.css'; // Your CSS
 
 function BookBorrowForm() {
   const [borrowerType, setBorrowerType] = useState('student');

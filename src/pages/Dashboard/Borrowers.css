@@ -1,0 +1,209 @@
+/* Container */
+.borrowers-container {
+    margin: 50px;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+  }
+  
+  /* Header */
+  .borrowers-header {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #555;
+  }
+  
+  /* Table styles */
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Noto Sans', sans-serif; /* Replace with your preferred font */
+  }
+  
+  .styled-table thead {
+    background-color: #f7f8fc;
+    text-align: left;
+  }
+  
+  .styled-table th {
+    padding: 16px;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  .styled-table tbody tr {
+    border-bottom: 1px solid #e6e6e6;
+    transition: background-color 0.3s ease;
+  }
+  
+  .styled-table tbody tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .styled-table td {
+    padding: 16px;
+    color: #333;
+  }
+  
+  .borrower-type {
+    padding: 8px 12px;
+    border-radius: 16px;
+    font-weight: 500;
+    text-align: center;
+    width: 100px;
+  }
+  
+  .borrower-type.student {
+    background-color: #eaf4fe;
+    color: #3178c6;
+  }
+  
+  .borrower-type.faculty {
+    background-color: #e8f5e9;
+    color: #43a047;
+  }
+  
+  .borrower-type.employee {
+    background-color: #fbe9e7;
+    color: #d84315;
+  }
+  
+  
+  /* Pagination styles */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .pagination-btn {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+  
+  .pagination-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination-info {
+    font-size: 16px;
+    margin: 0 10px;
+    color: #333;
+  }
+  
+
+  /* General Layout */
+.borrower-analytics-container {
+  display: grid;
+  grid-template-columns: 1fr; /* Default single column layout */
+  gap: 20px;
+  padding: 20px;
+  align-items: center;
+}
+
+.borrower-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.total-borrowers-card h3,
+.borrower-type-distribution-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.borrower-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #5c6bc0; /* Primary color for total count */
+}
+
+.borrower-type-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.borrower-type-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.borrower-type-name.student {
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #eaf4fe;
+  color: #3178c6;
+  padding: 2px;
+  border-radius: 10px;
+}
+.borrower-type-name.employee {
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #fbe9e7;
+  color: #d84315;
+  padding: 2px;
+  border-radius: 10px;
+}
+
+.borrower-type-name.faculty {
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #e8f5e9;
+  color: #43a047;
+  padding: 2px;
+  border-radius: 10px;
+}
+
+
+.borrower-type-count {
+  font-size: 1rem;
+  color: #888;
+}
+
+/* Desktop Layout */
+@media (min-width: 768px) {
+  .borrower-analytics-container {
+    grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
+  }
+}
+
+/* Large Desktop Layout */
+@media (min-width: 1024px) {
+  .borrower-analytics-container {
+    grid-template-columns: repeat(2, 1fr); /* Two columns for larger desktop */
+  }
+
+  .total-borrowers-card h3,
+  .borrower-type-distribution-card h3 {
+    font-size: 1.8rem; /* Larger headings for desktop */
+  }
+
+  .borrower-count {
+    font-size: 2.5rem; /* Larger borrower count for desktop */
+  }
+
+  .borrower-type-item {
+    font-size: 1.1rem; /* Slightly larger text on desktop */
+  }
+}

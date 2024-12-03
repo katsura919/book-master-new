@@ -1,68 +1,60 @@
 // src/pages/Dashboard/DashboardNavbar.js
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { LuLayoutDashboard } from "react-icons/lu";
-import { RiHome2Line } from "react-icons/ri";
-import { RiFilePaper2Line } from "react-icons/ri";
-import { PiBooksLight } from "react-icons/pi";
+
 import logo from '../../assets/logo.png';
+import './DashboardNavBar.css';
 
-
-
-import './DashboardNavBar.css'
 const DashboardNavbar = () => {
-    
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const toggleSidebar = () => {
-        setIsExpanded(!isExpanded);
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
     };
 
     return (
-        <div className={`sidebar ${isExpanded ? "expanded" : "collapsed"}`}>
-          
-            <div className="sidebar-content">
-                <div className='header-wrapper'>
-                    
-                <div className='logo-close-btn'>
+        <div className="dashboard-navbar-container">
+            <div className="dashboard-navbar">
+                <div className="dashboard-logo-wrapper">
                     <Link to="/hero">
-                    <img
-                    src= {logo}
-                    alt="Business Illustration"
-                    className="logo-dashboard"
-                />
+                        <img src={logo} alt="Logo" className="dashboard-logo" />
                     </Link>
-                
-                <button className="dash-close-btn" onClick={toggleSidebar}>
-                    {isExpanded ? "←" : "→"}
-                    </button>
                 </div>
-                
-                </div>
-                <ul className='dash-nav'> 
-                    
-                    <li className='dash-list'>
-                        <Link className='dash-link' to="/dashboard">
-                            <LuLayoutDashboard  size={20}/>
-                            {isExpanded && <span>Dashboard</span>}
-                        </Link>
-                    </li>
-                    <li className='dash-list'>
-                        <Link className='dash-link' to="/dashboard/bookreq">
-                            <RiFilePaper2Line size={20}/>
-                            {isExpanded && <span>Requests</span>}
-                        </Link>
-                    </li>
-                    <li className='dash-list'>
-                        <Link className='dash-link' to="/dashboard/addbook">
-                            <PiBooksLight size={20}/>
-                            {isExpanded && <span>Books</span>}
-                        </Link>
-                    </li>
-                    
-                </ul>
 
-                
+                {/* Hamburger Menu Button */}
+                <div className="hamburger" onClick={toggleMenu}>
+                    &#9776; {/* Hamburger icon */}
+                </div>
+
+                {/* Navigation Links */}
+                <div className={`nav-links ${isMenuOpen ? "open" : ""}`}>
+                    <ul>
+                        <li>
+                            <Link to="/dashboard" className="nav-link">
+                              
+                                <span>Dashboard</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/dashboard/bookreq" className="nav-link">
+                         
+                                <span>Requests</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/dashboard/addbook" className="nav-link">
+                           
+                                <span>Books</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/dashboard/borrowers" className="nav-link">
+                             
+                                <span>Borrowers</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     );

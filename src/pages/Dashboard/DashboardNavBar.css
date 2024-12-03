@@ -1,113 +1,101 @@
-/* src/components/CollapsibleSidebar.css */
-.sidebar {
-    height: 100vh;
-    width: 300px;
-    background-color: white;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-}
+/* DashboardNavBar.css */
 
-.sidebar.collapsed {
-    width: 55px;
-}
-
-.header-wrapper{
-    width: 90%;
-    display: flex;
-    margin-bottom: 10px;
+/* Basic styling for the navbar */
+.dashboard-navbar-container {
     padding: 10px;
-
 }
-    
-    
-.logo-dashboard{
-    width: 200px; 
+
+.dashboard-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: white;
+    color: white;
+    position: relative;
+}
+
+.dashboard-logo-wrapper .dashboard-logo {
     height: 30px;
-    display: flex;
-    flex-direction: row;
+}
 
-}
-.logo-close-btn{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-.dash-close-btn {
-    background: none;
-    width: 50px;
-    border: none;
+/* Hamburger icon (visible only on mobile) */
+.hamburger {
+    display: none;
+    font-size: 30px;
     cursor: pointer;
-    font-size: 20px;
-    align-self: flex-end;
-    color: black;
-    margin-left: 0;
+    color: rgb(68, 68, 68);
 }
 
-.sidebar-content {
-    width: 100%;
+/* Navbar links */
+.nav-links {
     display: flex;
-    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
-    justify-content: center;
 }
 
-.dash-logo {
-    font-size: 1rem;
-    font-weight: bold;
-    margin: 1rem 0;
-    color: #333;
-}
-
-.dash-nav {
+.nav-links ul {
     list-style: none;
-    padding: 0;
+    display: flex;
     margin: 0;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-
+    padding: 20px;
 }
 
-.dash-list {
-    width: 100%;
+.nav-links li {
+    margin: 0 10px;
+}
+
+.nav-link {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.2s ease;
-}
-
-li:hover {
-    background-color: #e0e4ea;
-}
-
-.dash-link {
+    color: #555;
     text-decoration: none;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
+    font-size: 16px;
 }
 
-span{
-    font-family: "Poppins", sans-serif;
-}
-.sidebar.collapsed .logo-dashboard {
-    display: none;
+.nav-link span {
+    margin-left: 5px;
 }
 
-.sidebar.collapsed .toggle-btn {
-    align-self: center;
+/* On mobile, hide the nav links and show hamburger menu */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 80px;  /* Below the navbar */
+        right: 10px;
+        width: 35%;
+        background-color: lightblue;
+        border-radius: 20px;
+    }
+
+    .nav-links.open {
+        display: block;
+    }
+
+    .nav-links ul {
+        flex-direction: column;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .nav-link span {
+      display: flex;
+    }
+
+    .nav-link {
+        margin-left: 15px;
+    }
 }
 
-.sidebar.collapsed .dash-logo {
-    display: none;
+@media (min-width: 769px) {
+    .hamburger {
+        display: none; /* Hide hamburger on desktop */
+    }
 }

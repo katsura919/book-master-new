@@ -5,19 +5,20 @@ import { Provider } from 'react-redux';
 import './App.css';
 
 import store from './redux/store';
-import Navbar from './pages/Navbar/Navbar';
+import Navbar from './pages/LandingPage/component/Navbar';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Login from './pages/LandingPage/Login';
 import Register from './pages/LandingPage/Register';
 import ProtectedRoute from './redux/ProtectedRoutes';
-import BookBorrowForm from './pages/BorrowForm/BookBorrowForm';
+import BookBorrowForm from './pages/LandingPage/BorrowFormPage';
 import DashboardNavBar from './pages/Dashboard/DashboardNavBar';
 import Overview from './pages/Dashboard/Overview';
 import BookReq from './pages/Dashboard/BookReq';
-import SearchResults from './pages/Navbar/component/SearchResults';
+import SearchResults from './pages/LandingPage/SearchResultsPage';
 import Books from './pages/Dashboard/Books';
-import BookDetails from './pages/Navbar/component/BookDetails';
-import AllBooks from './pages/LandingPage/AllBooks';
+import BookDetails from './pages/LandingPage/BookDetailsPage';
+import AllBooks from './pages/LandingPage/BooksPage';
+import Borrowers from './pages/Dashboard/Borrowers';
 const App = () => {
 
     
@@ -41,6 +42,7 @@ const App = () => {
                         <Route index element={<Overview />} />
                         <Route path="bookreq" element={<BookReq />} />
                         <Route path="addbook" element={<Books />} />
+                        <Route path="borrowers" element={<Borrowers />} />
                     </Route>
              
                 <Route path="/" element={<Navigate to="/hero" />} />

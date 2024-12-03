@@ -1,30 +1,261 @@
 .book-container{
-  display: flex;
-  flex-direction: column; 
-  width: calc(100% - 350px); 
-  height: 100%;
-  margin-left: 300px;
-  transition: margin-left 0.3s ease, width 0.3s ease;
-  overflow-x: hidden; 
-  padding: 20px;
-}
+  margin: 50px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+} 
 .books-header {
   margin-bottom: 20px;
-  color: rgb(22, 22, 22);
+  font-size: 24px;
+  color: #555;
+}
+/* Cards */
+.card-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 20px;
 }
 
-table {
-  width: 100%;
+.card {
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  max-width: 250px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card button:hover {
+  background-color: #0056b3;
+}
+
+.card-total-books {
+  background-color: #4e73df;
+  color: white;
+}
+
+.card-total-available-copies {
+  background-color: #1cc88a;
+  color: white;
+}
+
+.card-total-borrowed-books {
+  background-color: #f6c23e;
+  color: white;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.more-details-btn {
+  font-size: 14px;
+  text-decoration: underline;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.more-details-btn:hover {
+  text-decoration: none;
+}
+
+/* Top Books  */
+.top-books-card {
+  margin-top: 15px;
+  background-color: white;
+  color: #555;
+  padding: 20px;
+  border-radius: 12px;
+  width: 550px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.top-books-card-header {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.top-books-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.top-book-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.top-book-rank {
+  font-size: 24px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 20px;
+}
+
+.top-book-image {
+  width: 50px;
+  height: 75px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.top-book-details {
+  flex-grow: 1;
+}
+
+.top-book-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.top-book-borrow-count {
+  font-size: 14px;
+  color: #b0b0b0;
+}
+
+/* Books Table */
+
+.table-responsive{
+  max-width: 1200px;
+  border-radius: 12px;
+}
+.books-table {
   border-collapse: collapse;
-  margin: 20px 0;
+  background-color: black;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  font-family: 'Noto Sans', sans-serif;
+  border-radius: 12px;
 }
 
-th, td {
-  padding: 12px;
-  border: 1px solid #ddd;
+.books-table thead {
+  background-color: #f5f7fa;
   text-align: left;
 }
 
-th {
-  background-color: #f2f2f2;
+.books-table th {
+  padding: 16px;
+  color: #555;
+  font-weight: bold;
+  text-transform: uppercase;
 }
+
+.books-table tbody tr {
+  border-bottom: 1px solid #e6e6e6;
+  transition: background-color 0.3s ease;
+}
+
+.books-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.books-table td {
+  padding: 16px;
+  color: #333;
+}
+
+/* Availability Styles */
+.availability {
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.availability.available {
+  background-color: #e8f5e9;
+  color: #43a047;
+}
+
+.availability.unavailable {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+/* Show Requests Button */
+.requests-btn {
+  background-color: #3178c6;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.requests-btn:hover {
+  background-color: #255ea6;
+}
+
+
+
+
+.container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Table takes up 2/3 of the width, and Top Books takes 1/3 */
+  gap: 10px; /* Adds space between the columns */
+
+}
+
+/* Table container - ensuring it stays responsive */
+.table-container {
+  overflow-x: auto; /* Allows horizontal scrolling on small screens */
+}
+
+.top-books-container {
+  display: flex;
+  justify-content: flex-end; /* Centering the card */
+}
+
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  /* On smaller screens, switch to a single column layout */
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  /* Adjust the top books card width */
+  .top-books-card {
+    width: 100%; /* Full width for mobile */
+  }
+
+  /* Ensure the table is still scrollable */
+  .table-container {
+    max-width: 100%;
+  }
+}
+
+

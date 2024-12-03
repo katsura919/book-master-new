@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import "./AllBooks.css"; // Include a CSS file for styling
+import "./BooksPage.css"; // Include a CSS file for styling
 
 const AllBooks = () => {
   const [books, setBooks] = useState([]);

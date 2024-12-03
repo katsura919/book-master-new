@@ -13,7 +13,17 @@ function BookReq() {
   const [selectedOption, setSelectedOption] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-
+  const [currentTime, setCurrentTime] = useState('');
+  // Function to format time in hh:mm am/pm format
+  const formatTime = (date) => {
+   let hours = date.getHours();
+   let minutes = date.getMinutes();
+   const ampm = hours >= 12 ? 'pm' : 'am';
+   hours = hours % 12;
+   hours = hours ? hours : 12; // the hour '0' should be '12'
+   minutes = minutes < 10 ? '0' + minutes : minutes; // add leading zero for minutes
+   return `${hours}:${minutes} ${ampm}`;
+ };
   const fetchBookRequests = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/${fetchType}`);
@@ -25,6 +35,16 @@ function BookReq() {
 
   useEffect(() => {
     fetchBookRequests();
+    const interval = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(formatTime(now));
+    }, 60000); // Update every 60 seconds
+
+    // Initialize with the current time
+    setCurrentTime(formatTime(new Date()));
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(interval);
   }, [fetchType]);
 
 
@@ -80,41 +100,79 @@ function BookReq() {
   }, []);
 
   return (
-    <div className="home-container">
+    <div className="bookreq-container">
       
       <div>
-        <header className="content-header">
-          <h1>Requests</h1>
+        <header className="bookreq-header">
+          <h1>Book Requests</h1>
         </header>
       </div>
-
-
-      <div className='first-layer'>
-            <div className="count-box">
-              <h3>Pending</h3>
-              <p>{requests.pending}</p>
+   
+      {/* Cards Section */}
+      <div className="bookreq-cards-section">
+        <div className="bookreq-card card-pending">
+          <div className="bookreq-card-header">
+            <div className="bookreq-card-value">{requests.pending}</div>
+            <div className="bookreq-card-title">Pending</div>
+          </div>
+          <div className="bookreq-card-footer">
+            <div className="bookreq-info">
+              <div className="bookreq-info-icon"></div>
+              <span>Updated: {currentTime}</span>
             </div>
-            <div className="count-box">
-              <h3>Approved</h3>
-              <p>{requests.approved}</p>
-            </div>
-            <div className="count-box">
-              <h3>Overdue</h3>
-              <p>{requests.rejected}</p>
-            </div>
-            <div className="count-box">
-              <h3>Rejected</h3>
-              <p>{requests.overdue}</p>
-            </div>
+          </div>
         </div>
 
+        <div className="bookreq-card card-approved">
+          <div className="bookreq-card-header">
+            <div className="bookreq-card-value">{requests.approved}</div>
+            <div className="bookreq-card-title">Approved</div>
+          </div>
+          <div className="bookreq-card-footer">
+            <div className="update-info">
+              <div className="update-info-icon"></div>
+              <span>Updated: {currentTime}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bookreq-card card-overdue">
+          <div className="bookreq-card-header">
+            <div className="bookreq-card-value">{requests.overdue}</div>
+            <div className="bookreq-card-title">Overdue</div>
+          </div>
+          <div className="bookreq-card-footer">
+            <div className="update-info">
+              <div className="update-info-icon"></div>
+              <span>Updated: {currentTime}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bookreq-card card-downloads">
+          <div className="bookreq-card-header">
+            <div className="bookreq-card-value">{requests.rejected}</div>
+            <div className="bookreq-card-title">Rejected</div>
+          </div>
+          <div className="bookreq-card-footer">
+            <div className="update-info">
+              <div className="update-info-icon"></div>
+              <span>Updated: {currentTime}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search */}
       <input
+        className='bookreq-search'
         type="text"
         placeholder="Search by Name"
         value={searchTerm}
         onChange={handleSearchChange}
       />
 
+      {/* Type Selector */}
       <div className="radio-inputs">
         <label className="radio">
           <input
@@ -202,19 +260,15 @@ function BookReq() {
       </div>
 
       <div className="table-responsive">
-        <table className="dashboard-table">
+        <table className="dashboard-table styled-table">
           <thead>
             <tr>
               <th>Request ID</th>
               <th>Name</th>
+              <th>ID Number</th>
               <th>Type</th>
               <th>Status</th>
-              <th>Request Created</th>
               <th>Approval Date</th>
-              <th>Due Date</th>
-              <th>Hours Due</th>
-              <th>Penalty</th>
-          
             </tr>
           </thead>
           <tbody>
@@ -225,24 +279,25 @@ function BookReq() {
                 </td>
                 <td>{`${request.borrower.first_name} ${request.borrower.last_name}`}</td>
                 <td>{request.borrower.borrower_type}</td>
-                <td>{request.status}</td>
-                <td>{request.req_created}</td>
+                <td>{request.borrower_id}</td>
+                <td className={`bookreq-status`}>
+                   <div className={`bookreq-status-text ${request.status.toLowerCase()}`}>{request.status}</div>
+                </td>
                 <td>{request.req_approve || 'N/A'}</td>
-                <td>{request.books.length > 0 ? request.books[0].due_date : 'N/A'}</td>
-                <td>{request.books.length > 0 ? request.books[0].hours_due : 'N/A'} hrs</td>
-                <td>₱ {request.books.length > 0 ? request.books[0].penalty : 'N/A'}</td>
-                
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="pagination">
-        <button className='nav-btn' onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+
+
+
+      <div className="bookreq-pagination">
+        <button className='bookreq-nav-btn' onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
           Previous
         </button>
         <span>Page {currentPage} of {totalPages}</span>
-        <button className='nav-btn' onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages || currentRequests.length === 0}>
+        <button className='bookreq-nav-btn' onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages || currentRequests.length === 0}>
           Next
         </button>
       </div>
