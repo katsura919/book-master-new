@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Select from 'react-select'; // Import React-Select
-import './BorrowFormPage.css'; // Your CSS
+import Select from 'react-select';
+import QRCodeModal from './component/QRCodeModal';
+import './BorrowFormPage.css';
+
 
 function BookBorrowForm() {
   const [borrowerType, setBorrowerType] = useState('student');
@@ -12,16 +14,12 @@ function BookBorrowForm() {
   const [contactNumber, setContactNumber] = useState('');
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [availableBooks, setAvailableBooks] = useState([]);
-  const [department, setDepartment] = useState(null); // New state for department
-  console.log(department);
-  const departmentOptions = [
-    { value: 'Computer Science', label: 'Computer Science' },
-    { value: 'Mathematics', label: 'Mathematics' },
-    { value: 'Physics', label: 'Physics' },
-    { value: 'Engineering', label: 'Engineering' },
-    { value: 'Biology', label: 'Biology' },
-  ];
+  const [department, setDepartment] = useState(null);
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [trackingURL, setTrackingURL] = useState('');
+
+  console.log(trackingURL)
   // Fetch available books on component mount
   useEffect(() => {
     const fetchBooks = async () => {
@@ -35,12 +33,20 @@ function BookBorrowForm() {
     fetchBooks();
   }, []);
 
+  const departmentOptions = [
+    { value: 'Computer Science', label: 'Computer Science' },
+    { value: 'Mathematics', label: 'Mathematics' },
+    { value: 'Physics', label: 'Physics' },
+    { value: 'Engineering', label: 'Engineering' },
+    { value: 'Biology', label: 'Biology' },
+  ];
+
   const getBorrowLimit = (type) => {
     switch (type) {
       case 'student':
         return { maxBooks: 3, dueDays: 7 };
       case 'faculty':
-        return { maxBooks: 10, dueDays: 120 }; // 1 semester
+        return { maxBooks: 10, dueDays: 120 };
       case 'employee':
         return { maxBooks: 10, dueDays: 7 };
       default:
@@ -66,7 +72,7 @@ function BookBorrowForm() {
       const response = await axios.post('http://localhost:5000/borrow-book', {
         studentId,
         firstName,
-        lastName,
+        lastName, 
         email,
         contactNumber,
         borrowerType,
@@ -75,7 +81,14 @@ function BookBorrowForm() {
       });
 
       if (response.status === 201) {
-        alert('Books borrowed successfully!');
+        const { requestId } = response.data; // Get the request ID
+        const qrURL = `http://localhost:3000/track-request/${requestId}`;
+        setTrackingURL(qrURL);
+
+        // Open the modal with the QR code
+        setModalIsOpen(true);
+
+        // Reset the form
         resetForm();
       } else {
         alert('Failed to borrow books.');
@@ -96,102 +109,103 @@ function BookBorrowForm() {
     setDepartment(null);
   };
 
-  // Options for the searchable dropdown
+  const handleBookSelect = (selectedOptions) => {
+    setSelectedBooks(selectedOptions || []);
+  };
+
   const bookOptions = availableBooks.map((book) => ({
     value: book.book_id,
     label: `${book.title} (ISBN: ${book.isbn}) - ${book.available_copies} available`,
   }));
 
-  const handleBookSelect = (selectedOptions) => {
-    setSelectedBooks(selectedOptions || []);
-  };
-
   return (
-    <form className="borrow-form" onSubmit={handleSubmit}>
-      <h2>Book Check-Out Form</h2>
-
-      <label>
-        Borrower Type:
-        <select value={borrowerType} onChange={(e) => setBorrowerType(e.target.value)}>
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
-          <option value="employee">Employee</option>
-        </select>
-      </label>
-
-      <label>
-        ID Number:
-        <input
-          type="text"
-          value={studentId}
-          onChange={(e) => setStudentId(e.target.value)}
-          required
-        />
-      </label>
-
-      <label>
-        First Name:
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-        />
-      </label>
-
-      <label>
-        Last Name:
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          required
-        />
-      </label>
-
-      <label>
-        Email:
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </label>
-
-      <label>
-        Contact Number:
-        <input
-          type="text"
-          value={contactNumber}
-          onChange={(e) => setContactNumber(e.target.value)}
-          required
-        />
-      </label>
-
-      <label>
-        Department:
+    <div>
+      <form className="borrow-form" onSubmit={handleSubmit}>
+        <h2>Book Check-Out Form</h2>
+        {/* Borrower Form Fields */}
+        <label>
+          Borrower Type:
+          <select value={borrowerType} onChange={(e) => setBorrowerType(e.target.value)}>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+            <option value="employee">Employee</option>
+          </select>
+        </label>
+        <label>
+          ID Number:
+          <input
+            type="text"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          First Name:
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Last Name:
+          <input
+            type="text"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Contact Number:
+          <input
+            type="text"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Department:
+          <Select
+            options={departmentOptions}
+            onChange={setDepartment}
+            value={department}
+            placeholder="Select Department"
+          />
+        </label>
+        <h3>Books to Borrow:</h3>
         <Select
-          options={departmentOptions}
-          onChange={setDepartment}
-          value={department}
-          placeholder="Select Department"
+          isMulti
+          options={bookOptions}
+          onChange={handleBookSelect}
+          value={selectedBooks}
+          placeholder="Search and select books"
         />
-      </label>
+        <button className="submit-req-btn" type="submit">
+          Borrow Books
+        </button>
+      </form>
 
-      <h3>Books to Borrow:</h3>
-      <Select
-        isMulti
-        options={bookOptions}
-        onChange={handleBookSelect}
-        value={selectedBooks}
-        placeholder="Search and select books"
+      {/* QRCodeModal Component */}
+      <QRCodeModal 
+        modalIsOpen={modalIsOpen} 
+        setModalIsOpen={setModalIsOpen} 
+        trackingURL={trackingURL} 
       />
 
-      <button className="submit-req-btn" type="submit">
-        Borrow Books
-      </button>
-    </form>
+    </div>
   );
 }
 

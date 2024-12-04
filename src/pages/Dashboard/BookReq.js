@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './BookReq.css';
 import RequestModal from './Modals/RequestModal'; // Import the Modal component
+import Modal from 'react-modal';
 
+Modal.setAppElement('#root'); // Assuming your root element has id 'root'
 const ENTRIES_PER_PAGE = 10;
 
 function BookReq() {
@@ -11,9 +13,10 @@ function BookReq() {
   const [currentPage, setCurrentPage] = useState(1);
   const [fetchType, setFetchType] = useState('all-req');
   const [selectedOption, setSelectedOption] = useState('All');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Function to format time in hh:mm am/pm format
   const formatTime = (date) => {
    let hours = date.getHours();
@@ -282,7 +285,7 @@ function BookReq() {
                 <td>{request.borrower_id}</td>
                 <td className={`bookreq-status`}>
                    <div className={`bookreq-status-text ${request.status.toLowerCase()}`}>{request.status}</div>
-                </td>
+                </td> 
                 <td>{request.req_approve || 'N/A'}</td>
               </tr>
             ))}
@@ -301,6 +304,7 @@ function BookReq() {
           Next
         </button>
       </div>
+      
       {/* Modal for request details */}
       <RequestModal 
       isOpen={isModalOpen} 

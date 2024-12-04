@@ -19,6 +19,7 @@ import Books from './pages/Dashboard/Books';
 import BookDetails from './pages/LandingPage/BookDetailsPage';
 import AllBooks from './pages/LandingPage/BooksPage';
 import Borrowers from './pages/Dashboard/Borrowers';
+import TrackingPage from './pages/LandingPage/TrackingPage';
 const App = () => {
 
     
@@ -35,6 +36,7 @@ const App = () => {
                     <Route path="/allbooks" element={<AllBooks />} />
                     <Route path="/borrow" element={<BookBorrowForm />} />
                     <Route path="/bookdetails/:bookId" element={<BookDetails />} />
+                    <Route path="/track-request/:req_id" element={<TrackingPage />} />
                 </Route>
 
                 {/* Routes without Navbar */}

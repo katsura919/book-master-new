@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import CheckOutButton from './component/CheckOutButton';
 import Footer from './component/Footer';
 import herocover from '../../assets/cover.png'
+import TopBorrowedBooks from './component/TopBorrowedBooks';
 const LandingPage = () => {
     const navigate = useNavigate();
 
@@ -26,8 +27,9 @@ const LandingPage = () => {
                 className="header-image"
             />
         </div>
-  </header>
-  <Footer/>
+    </header>
+    <TopBorrowedBooks/>
+    <Footer/>
   </div>
   )
 };

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Modal from 'react-modal';
 import './RequestModal.css';
 import MessageBox from '../../../components/MessageBox';
 import { FaEllipsisV } from 'react-icons/fa'; // For the 3-dots icon
 import { jsPDF } from 'jspdf'; // Import jsPDF
 import 'jspdf-autotable';
-
 
 const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
   const [requestDetails, setRequestDetails] = useState(null); // Use null for initial state
@@ -98,8 +98,6 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
     // Save PDF
     doc.save(`Request_${requestDetails?.req_id || 'unknown'}.pdf`);
   };
-  
-  
 
   const handleApprove = async (reqId) => {
     try {
@@ -137,7 +135,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
       if (response.status === 200) {
         setMessage('Request returned successfully!');
         setMessageType('error');
-        await fetchRequestDetails(); // Refresh the list after declining
+        await fetchRequestDetails(); // Refresh the list after returning
       }
     } catch (error) {
       console.error('Error returning the request:', error);
@@ -167,11 +165,15 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
     }
   };
 
-  if (!isOpen) return null; // Don't render if not open
-
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      contentLabel="Request Details"
+      className="request-modal"
+      overlayClassName="request-modal-overlay"
+    >
+      <div className="request-modal-content">
         {message && (
           <MessageBox
             message={message}
@@ -234,7 +236,12 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                       <td>{book.penalty}</td>
                       <td>{book.book_status}</td>
                       <td>
-                        <button onClick={() => updateBookStatus(book.book_id)}>Return</button>
+                      <button 
+                        onClick={() => updateBookStatus(book.book_id)} 
+                        disabled={requestDetails.status === 'Pending'}
+                      >
+                        Return
+                      </button>
                       </td>
                     </tr>
                   ))
@@ -246,44 +253,44 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
               </tbody>
             </table>
             <div>
-          <button
-            onClick={() => handleApprove(requestDetails?.req_id)}
-            disabled={requestDetails?.status === 'Approved'  || requestDetails?.status === 'Returned'}
-            className={requestDetails?.status === 'Approved' ? 'approved' : 'approved'}
-          >
-            {requestDetails?.status === 'Approved' ? 'Approved' : 'Approve'}
-          </button>
+              <button
+                onClick={() => handleApprove(requestDetails?.req_id)}
+                disabled={requestDetails?.status === 'Approved' || requestDetails?.status === 'Returned'}
+                className={requestDetails?.status === 'Approved' ? 'approved' : 'approved'}
+              >
+                {requestDetails?.status === 'Approved' ? 'Approved' : 'Approve'}
+              </button>
 
-          <button
-            onClick={() => handleDecline(requestDetails?.req_id)}
-            disabled={requestDetails?.status === 'Rejected' || requestDetails?.status === 'Overdue' || requestDetails?.status === 'Returned'}
-            className={requestDetails?.status === 'Rejected' ? 'rejected' : 'rejected'}
-          >
-            {requestDetails?.status === 'Rejected' ? 'Rejected' : 'Reject'}
-          </button>
+              <button
+                onClick={() => handleDecline(requestDetails?.req_id)}
+                disabled={requestDetails?.status === 'Rejected' || requestDetails?.status === 'Overdue' || requestDetails?.status === 'Returned'}
+                className={requestDetails?.status === 'Rejected' ? 'rejected' : 'rejected'}
+              >
+                {requestDetails?.status === 'Rejected' ? 'Rejected' : 'Reject'}
+              </button>
 
-          <button 
-            onClick={() => {
-              if (window.confirm("Are you sure you want to return this book request?")) {
-                handleReturn(requestDetails?.req_id);
-              }
-            }}
-            disabled={requestDetails?.status === 'Returned' || requestDetails?.status === 'Rejected'}
-            className={requestDetails?.status === 'Returned' ? 'returned' : 'Returned'}
-          >
-            {requestDetails?.status === 'Returned' ? 'Returned' : 'Return'}
-          </button>
+              <button 
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to return this book request?")) {
+                    handleReturn(requestDetails?.req_id);
+                  }
+                }}
+                disabled={requestDetails?.status === 'Returned' || requestDetails?.status === 'Rejected'}
+                className={requestDetails?.status === 'Returned' ? 'returned' : 'Returned'}
+              >
+                {requestDetails?.status === 'Returned' ? 'Returned' : 'Return'}
+              </button>
 
-          <button onClick={onClose}>
-            Close
-          </button>
-        </div> 
+              <button onClick={onClose}>
+                Close
+              </button>
+            </div>
           </div>
         ) : (
           <p>Loading...</p>
         )}
       </div>
-    </div>
+    </Modal>
   );
 };
 

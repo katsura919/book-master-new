@@ -217,7 +217,12 @@
     text-align: center;
     border-radius: 10px;
   }
-  
+  .bookreq-status-text.returned{
+    background-color: #f9e7fb;
+    color: #e225e2;
+    text-align: center;
+    border-radius: 10px;
+  }
   
   .btn-container {
     display: flex;

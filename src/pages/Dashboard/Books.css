@@ -152,7 +152,7 @@
 }
 .books-table {
   border-collapse: collapse;
-  background-color: black;
+  background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   font-family: 'Noto Sans', sans-serif;

@@ -16,7 +16,7 @@ const Books = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedBook, setSelectedBook] = useState(null);
   const itemsPerPage = 5;
-  console.log(totalBooks);
+  
 
   const fetchBooks = async () => {
     try {
@@ -113,7 +113,7 @@ const Books = () => {
 
   const handleSaveEdit = async (updatedBook) => {
     try {
-      await axios.put(`http://localhost:5000/book/${updatedBook.book_id}`, updatedBook);
+      await axios.put(`http://localhost:5000/book-edit/${updatedBook.book_id}`, updatedBook);
       setBooks((prevBooks) =>
         prevBooks.map((book) => (book.book_id === updatedBook.book_id ? updatedBook : book))
       );
@@ -206,7 +206,7 @@ const Books = () => {
       <BookRequestsModal
         isOpen={isRequestsModalOpen}
         onClose={handleCloseRequestsModal}
-        bookId={bookIdForRequests}  // Pass the selected book ID to the modal
+        bookId={bookIdForRequests} // Pass the selected book ID to the modal
       />
 
       <div>
@@ -250,7 +250,7 @@ const Books = () => {
               </td>
               <td>
                 <button className="requests-btn" onClick={() => handleOpenRequestsModal(book.book_id)}>
-                  Show Requests
+                  Show Borrowers
                 </button>
               </td>
             </tr>

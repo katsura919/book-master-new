@@ -1,0 +1,71 @@
+/* Overall layout */
+.book-details-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding-top: 100px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Poster/Image section */
+  .book-poster {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .book-cover-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  
+  /* Info Section */
+  .book-info {
+    flex: 2;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  .book-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .book-author,
+  .book-isbn {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .book-description {
+    font-size: 1rem;
+    margin: 15px 0;
+    line-height: 1.5;
+  }
+  
+  .book-categories {
+    margin-top: 20px;
+  }
+  
+  .book-categories h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .categories-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .category-item {
+    font-size: 1.1rem;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  

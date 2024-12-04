@@ -7,6 +7,7 @@ const Books = () => {
     title: "",
     isbn: "",
     author: "",
+    description: "", // Add description field to book data
     total_copies: "",
     available_copies: "",
   };
@@ -118,6 +119,14 @@ const Books = () => {
           placeholder="Author"
           value={bookData.author}
           onChange={handleChange}
+          required
+        />
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={bookData.description}
+          onChange={handleChange}
+          style={{ width: "95%", minHeight: "50px",  overflow: "hidden" }} // Prevent resizing but allow auto expansion
           required
         />
         <input

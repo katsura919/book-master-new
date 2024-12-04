@@ -21,7 +21,7 @@ const SearchResults = () => {
   // Function to fetch search results from the backend
   const fetchBooks = async () => {
     try {
-      setLoading(true);
+      setLoading(true); 
       setError('');
 
       const response = await axios.get(`${apiBaseUrl}/search`, {

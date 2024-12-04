@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './BookRequestsModal.css'
+import Modal from "react-modal"; // Import react-modal
+import './BookRequestsModal.css';  // Import your modal styles
+
+// Set the app element for accessibility (screen readers)
+Modal.setAppElement("#root");
 
 const BookRequestsModal = ({ isOpen, onClose, bookId }) => {
   const [requests, setRequests] = useState([]);  // State to store fetched data
@@ -26,52 +30,54 @@ const BookRequestsModal = ({ isOpen, onClose, bookId }) => {
     fetchBookRequests();
   }, [bookId]);  // This effect runs when the bookId changes
 
-  if (!isOpen) return null;  // Don't render modal if it's not open
-
   return (
-    <div className="modal">
-      <div className="modal-content">
-        <h2>Book Requests for Book ID: {bookId}</h2>
-        <button onClick={onClose}>Close</button>
+    <Modal
+      isOpen={isOpen} // Control modal visibility
+      onRequestClose={onClose} // Close the modal when requested (like when clicking outside or pressing Esc)
+      className="modal-content" // Your modal content styling
+      overlayClassName="modal-overlay" // Your modal overlay styling
+      contentLabel="Book Requests Modal" // Accessibility label
+    >
+      <h2>Borrowers</h2>
+      <button onClick={onClose}>Close</button>
 
-        {loading ? (
-          <p>Loading...</p>  // Show loading indicator while fetching
-        ) : error ? (
-          <p>{error}</p>  // Show error message if there's an error
-        ) : requests.length > 0 ? (
-          <table className="requests-table">
-            <thead>
-              <tr>
-                <th>Requester</th>
-                <th>Email</th>
-                <th>Contact</th>
-                <th>Borrower Type</th>
-                <th>Status</th>
-                <th>Request Created</th>
-                <th>Due Date</th>
-                <th>Overdue Days</th>
+      {loading ? (
+        <p>Loading...</p>  // Show loading indicator while fetching
+      ) : error ? (
+        <p>No Borrowers</p>  // Show error message if there's an error
+      ) : requests.length > 0 ? (
+        <table className="requests-table">
+          <thead>
+            <tr>
+              <th>Requester</th>
+              <th>Email</th>
+              <th>Contact</th>
+              <th>Borrower Type</th>
+              <th>Status</th>
+              <th>Request Created</th>
+              <th>Due Date</th>
+              <th>Overdue Days</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests.map((request) => (
+              <tr key={request.req_id}>
+                <td>{request.first_name} {request.last_name}</td>
+                <td>{request.email}</td>
+                <td>{request.contact_number}</td>
+                <td>{request.borrower_type}</td>
+                <td>{request.status}</td>
+                <td>{new Date(request.req_created).toLocaleString()}</td>
+                <td>{request.req_approve ? new Date(request.req_approve).toLocaleString() : 'N/A'}</td>
+                <td>{request.overdue_days}</td>
               </tr>
-            </thead>
-            <tbody>
-              {requests.map((request) => (
-                <tr key={request.req_id}>
-                  <td>{request.first_name} {request.last_name}</td>
-                  <td>{request.email}</td>
-                  <td>{request.contact_number}</td>
-                  <td>{request.borrower_type}</td>
-                  <td>{request.status}</td>
-                  <td>{new Date(request.req_created).toLocaleString()}</td>
-                  <td>{request.req_approve ? new Date(request.req_approve).toLocaleString() : 'N/A'}</td>
-                  <td>{request.overdue_days}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No requests found for this book.</p>  // No data message
-        )}
-      </div>
-    </div>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No requests found for this book.</p>  // No data message
+      )}
+    </Modal>
   );
 };
 
