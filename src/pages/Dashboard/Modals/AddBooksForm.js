@@ -97,6 +97,7 @@ const Books = () => {
             <h1>Add Books</h1>
           </header>
         </div>
+
         <input
           type="text"
           name="title"
@@ -105,6 +106,7 @@ const Books = () => {
           onChange={handleChange}
           required
         />
+
         <input
           type="text"
           name="isbn"
@@ -113,6 +115,7 @@ const Books = () => {
           onChange={handleChange}
           required
         />
+
         <input
           type="text"
           name="author"
@@ -121,14 +124,16 @@ const Books = () => {
           onChange={handleChange}
           required
         />
+
         <textarea
           name="description"
           placeholder="Description"
           value={bookData.description}
           onChange={handleChange}
-          style={{ width: "95%", minHeight: "50px",  overflow: "hidden" }} // Prevent resizing but allow auto expansion
+          style={{ width: "100%", minHeight: "50px",  overflow: "hidden" }} // Prevent resizing but allow auto expansion
           required
         />
+
         <input
           type="number"
           name="total_copies"
@@ -137,6 +142,7 @@ const Books = () => {
           onChange={handleChange}
           required
         />
+
         <input
           type="number"
           name="available_copies"
@@ -145,13 +151,15 @@ const Books = () => {
           onChange={handleChange}
           required
         />
+
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         <input
           type="file"
           name="cover_image"
           accept="image/*"
           onChange={handleImageChange}
         />
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+    
 
         {/* Category selection with react-select */}
         <div>

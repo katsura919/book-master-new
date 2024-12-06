@@ -8,6 +8,7 @@ import { jsPDF } from 'jspdf'; // Import jsPDF
 import 'jspdf-autotable';
 
 const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
+  const apiBaseUrl = 'http://localhost:5000';
   const [requestDetails, setRequestDetails] = useState(null); // Use null for initial state
   const [error, setError] = useState(null); // State for error handling
   const [message, setMessage] = useState(null);
@@ -57,47 +58,53 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   // PDF generation function
   const generatePDF = () => {
-    const doc = new jsPDF();
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth(); // Get page width
   
-    // Title
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text('Request Details', 20, 20);
+  // Title
+  const title = 'INVOICE';
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  const titleWidth = doc.getTextWidth(title); // Get the width of the text
+  const titleX = (pageWidth - titleWidth) / 2; // Calculate the X position to center
+  doc.text(title, titleX, 20); // Center the title horizontally
   
-    // Request ID and Borrower Information
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(12);
-    doc.text(`Request ID: ${requestDetails?.req_id || 'N/A'}`, 20, 30);
-    doc.text(`Name: ${requestDetails?.borrower.first_name} ${requestDetails?.borrower.last_name || 'N/A'}`, 20, 40);
-    doc.text(`Type: ${requestDetails?.borrower.borrower_type || 'N/A'}`, 20, 50);
-    doc.text(`Status: ${requestDetails?.status || 'N/A'}`, 20, 60);
-    doc.text(`Request Created: ${requestDetails?.req_created || 'N/A'}`, 20, 70);
-    doc.text(`Approval Date: ${requestDetails?.req_approve || 'N/A'}`, 20, 80);
-  
-    // Books Table Header and Data
-    const booksData = requestDetails?.books || [];
-    const tableColumns = ['Title', 'Due Date', 'Hours Due', 'Penalty', 'Status'];
-    const tableRows = booksData.map(book => [
-      book.title || 'N/A',
-      book.due_date || 'N/A',
-      `${book.hours_due || '0'} hrs`,
-      `₱ ${book.penalty || '0'}`,
-      book.book_status || 'N/A'
-    ]);
-  
-    // Add table to the PDF
-    doc.autoTable({
-      startY: 90, // Set where the table should start
-      head: [tableColumns], // Table headers
-      body: tableRows, // Table rows with data
-      theme: 'grid', // Optional: You can change the table theme (like 'striped', 'grid', 'plain', etc.)
-      headStyles: { fontSize: 12, fontStyle: 'bold' },
-      styles: { fontSize: 10 },
-    });
-  
-    // Save PDF
-    doc.save(`Request_${requestDetails?.req_id || 'unknown'}.pdf`);
-  };
+  // Request ID and Borrower Information
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(12);
+  doc.text(`University of Science and Technology of Southern Philipines`, 50, 30);
+  doc.text(`Request #: ${requestDetails?.req_id || 'N/A'}`, 20, 42);
+  doc.text(`Name: ${requestDetails?.borrower.first_name} ${requestDetails?.borrower.last_name || 'N/A'}`, 20, 50);
+  doc.text(`Type: ${requestDetails?.borrower.borrower_type || 'N/A'}`, 20, 58);
+  doc.text(`Status: ${requestDetails?.status || 'N/A'}`, 20, 66);
+  doc.text(`Request Created: ${requestDetails?.req_created || 'N/A'}`, 20, 74);
+  doc.text(`Approval Date: ${requestDetails?.req_approve || 'N/A'}`, 20, 82);
+
+  // Books Table Header and Data
+  const booksData = requestDetails?.books || [];
+  const tableColumns = ['Title', 'Due Date', 'Hours Due', 'Penalty', 'Status'];
+  const tableRows = booksData.map(book => [
+    book.title || 'N/A',
+    book.due_date || 'N/A',
+    `${book.hours_due || '0'} hrs`,
+    `${book.penalty || '0'} php`,
+    book.book_status || 'N/A'
+  ]);
+
+  // Add table to the PDF
+  doc.autoTable({
+    startY: 100, // Set where the table should start
+    head: [tableColumns], // Table headers
+    body: tableRows, // Table rows with data
+    theme: 'grid', // Optional: You can change the table theme (like 'striped', 'grid', 'plain', etc.)
+    headStyles: { fontSize: 12, fontStyle: 'bold' },
+    styles: { fontSize: 10 },
+  });
+
+  // Save PDF
+  doc.save(`Request_${requestDetails?.req_id || 'unknown'}.pdf`);
+};
+
 
   const handleApprove = async (reqId) => {
     try {
@@ -165,6 +172,40 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
     }
   };
 
+  const renewBook = async (book_id, req_id, borrower_type) => {
+    const payload = {
+      book_id,
+      req_id,
+      borrower_type,
+    };
+    
+    console.log(payload);
+  
+    try {
+      const response = await axios.post(`${apiBaseUrl}/renew-book`, payload);
+      console.log('Book renewed successfully:', response.data);
+      fetchRequestDetails(); // Refresh the request details
+    } catch (error) {
+      console.error('Error renewing book:', error.response?.data || error.message);
+    }
+  
+  };
+  
+  
+  
+  const removeBook = async (bookId, reqId) => {
+    if (window.confirm('Are you sure you want to remove this book?')) {
+      try {
+        const response = await axios.delete(`${apiBaseUrl}/remove-book`, { data: { book_id: bookId, req_id: reqId } });
+        alert('Book removed successfully!');
+        fetchRequestDetails(); // Refresh the request details
+      } catch (error) {
+        console.error('Error removing book:', error);
+        alert('Failed to remove the book.');
+      }
+    }
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -173,7 +214,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
       className="request-modal"
       overlayClassName="request-modal-overlay"
     >
-      <div className="request-modal-content">
+      <div className="request-modal-content"> 
         {message && (
           <MessageBox
             message={message}
@@ -192,11 +233,14 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               />
               {isDropdownOpen && (
-                <div className="dropdown-menu">
-                  <button onClick={() => handleDeleteRequest(requestDetails?.req_id)}>
+                <div 
+                className="dropdown-menu">
+                  <button 
+                  className='delete-req-btn' onClick={() => handleDeleteRequest(requestDetails?.req_id)}>
                     Delete Request
                   </button>
-                  <button onClick={generatePDF}>Generate PDF</button>
+                  <button 
+                  className='generate-req-btn' onClick={generatePDF}>Generate PDF</button>
                 </div>
               )}
             </div>
@@ -238,9 +282,28 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                       <td>
                       <button 
                         onClick={() => updateBookStatus(book.book_id)} 
-                        disabled={requestDetails.status === 'Pending'}
+                        disabled={requestDetails.status === 'Pending' || book?.book_status === 'RETURNED'}
                       >
                         Return
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (window.confirm("Are you sure you want to renew this book?")) {
+                            renewBook(book.book_id, requestDetails?.req_id, requestDetails?.borrower.borrower_type);
+                          }
+                        }} 
+              
+                        disabled={requestDetails.status === 'Pending' || book?.book_status === 'RETURNED'}
+                      >
+                        Renew
+                      </button>
+
+                      <button 
+                        onClick={() => removeBook(book.book_id, requestDetails.req_id)} 
+                        disabled={requestDetails.status === 'Pending' }
+                      >
+                        Remove
                       </button>
                       </td>
                     </tr>

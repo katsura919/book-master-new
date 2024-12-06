@@ -167,15 +167,23 @@ function BookBorrowForm() {
             required
           />
         </label>
+
         <label>
           Contact Number:
           <input
-            type="text"
+            type="tel"
             value={contactNumber}
-            onChange={(e) => setContactNumber(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) { // Allow only digits
+                setContactNumber(value);
+              }
+            }}
             required
           />
         </label>
+
+
         <label>
           Department:
           <Select
@@ -183,6 +191,7 @@ function BookBorrowForm() {
             onChange={setDepartment}
             value={department}
             placeholder="Select Department"
+            required
           />
         </label>
         <h3>Books to Borrow:</h3>
@@ -194,7 +203,7 @@ function BookBorrowForm() {
           placeholder="Search and select books"
         />
         <button className="submit-req-btn" type="submit">
-          Borrow Books
+          Checkout
         </button>
       </form>
 

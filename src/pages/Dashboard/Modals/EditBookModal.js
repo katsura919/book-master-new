@@ -92,8 +92,8 @@ const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="modal-content"
-      overlayClassName="modal-overlay"
+      className="edit-book-modal"
+      overlayClassName="edit-book-overlay" 
       contentLabel="Edit Book Modal"
     >
       <h2>Edit Book</h2>
