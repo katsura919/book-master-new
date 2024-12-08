@@ -56,6 +56,7 @@ const Login = () => {
                 onClick={togglePasswordVisibility}
                 aria-label={showPassword ? 'Hide password' : 'Show password'} // Accessibility
               >
+                <div style={{alignItems: 'center', marginBottom: 17}}>
                 <svg
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -65,7 +66,6 @@ const Login = () => {
                   {showPassword ? (
                     // Eye-off icon (for hiding password)
                     <path
-                      d="M17.94 17.94A10 10 0 016.06 6.06M12 12a3 3 0 11-6 0 3 3 0 016 0z"
                       strokeWidth={2}
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -88,6 +88,7 @@ const Login = () => {
                     </>
                   )}
                 </svg>
+                </div>
               </button>
             </div>
 
@@ -129,6 +130,7 @@ const StyledWrapper = styled.div`
   .input-container {
     position: relative;
     margin: 8px 0;
+    align-tems: center;
   }
 
   .input-container input {
@@ -141,9 +143,11 @@ const StyledWrapper = styled.div`
     background-color: #fff;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     outline: none;
+     align-tems: center;
   }
 
   .toggle-password-btn {
+    align-tems: center;
     position: absolute;
     top: 0;
     right: 10px;
@@ -157,6 +161,7 @@ const StyledWrapper = styled.div`
   }
 
   .toggle-password-btn svg {
+  align-tems: center;
     width: 1rem;
     height: 1rem;
     color: #9ca3af;
@@ -165,7 +170,7 @@ const StyledWrapper = styled.div`
   .submit {
     width: 100%;
     padding: 0.75rem 1.25rem;
-    background-color: #4f46e5;
+    background-color: #4a90e2;
     color: #ffffff;
     font-size: 0.875rem;
     font-weight: 500;

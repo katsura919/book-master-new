@@ -39,7 +39,7 @@ const TopBorrowedBooks = () => {
 
   return (
     <div className="top-borrowed-books">
-      <h2 className='top-borrowed-books-header'>Top Borrowed Books</h2>
+      <h2 className='top-borrowed-books-header'>TOP BORROWED BOOKS</h2>
       <div className="books-list">
         {topBooks.map((book) => (
           <div key={book.book_id} className="book-item"  onClick={() => handleCardClick(book.book_id)} style={{cursor: 'pointer'}}>

@@ -1,45 +1,67 @@
 .top-borrowed-books {
-    background-color: lightblue;
-  }
-  
-  .top-borrowed-books-header{
-    color: white;
-    justify-content: flex-start;
-  }
-  .books-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-  
-  .book-item {
-    background: #f9f9f9;
-    border-radius: 8px;
-    margin: 10px;
-    width: 150px;
-    padding: 10px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .book-cover {
-    width: 150px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 5px;
-  }
-  
-  .book-info {
-    margin-top: 10px;
-  }
-  
-  .book-info h3 {
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .book-info p {
-    font-size: 14px;
-    color: #555;
-  }
-  
+  padding: 20px;
+  text-align: center;
+}
+
+.top-borrowed-books-header {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #7F8C8D;
+}
+
+.books-list {
+  display: flex; /* Arrange items in a row */
+  gap: 20px; /* Space between items */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent items from wrapping to the next line */
+  padding: 10px;
+  border: 1px solid #ccc; /* Optional: Add border for better visibility */
+  background-color: #f9f9f9; /* Optional: Background for scrollable area */
+}
+
+.book-item {
+  flex: 0 0 auto; /* Prevent items from shrinking or growing */
+  width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: white;
+  transition: transform 0.2s ease;
+}
+
+.book-item:hover {
+  transform: scale(1.05); /* Add hover effect */
+}
+
+.book-cover {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.book-info {
+  padding: 10px;
+}
+
+.book-info h3 {
+  font-size: 1rem;
+  margin: 10px 0 5px;
+}
+
+.book-info p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Optional: Hide the horizontal scrollbar (for modern browsers) */
+.books-list::-webkit-scrollbar {
+  height: 8px; /* Adjust scrollbar height */
+}
+.books-list::-webkit-scrollbar-thumb {
+  background: #ccc; /* Scrollbar thumb color */
+  border-radius: 4px;
+}
+.books-list::-webkit-scrollbar-thumb:hover {
+  background: #888; /* Thumb hover color */
+}

@@ -1,18 +1,34 @@
 import React from "react";
-
+import ContactUs from './ContactUs';
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        <p style={styles.text}>
-          &copy; {currentYear} Book Master | USTP Library Borrowing System
-        </p>
-        <p style={styles.text}>
-          <a href="/privacy" style={styles.link}>Privacy Policy</a> | 
-          <a href="/terms" style={styles.link}> Terms of Service</a>
-        </p>
+        <div style={styles.column}>
+          <h3 style={styles.heading}>Company</h3>
+          <ul style={styles.list}>
+            <li><a  style={styles.link}>About Us</a></li>
+            <li><a href="https://www.ustp.edu.ph/cdeo/library/services/" style={styles.link}>Our Services</a></li>
+            <li><a  style={styles.link}>Privacy Policy</a></li>
+            <li><a style={styles.link}>Affiliate Program</a></li>
+          </ul>
+        </div>
+
+        <div style={styles.column}>
+          <h3 style={styles.heading}>Get Help</h3>
+          <ul style={styles.list}>
+            <li><a  style={styles.link}>FAQ</a></li>
+            <li><a style={styles.link}>Payment Options</a></li>
+          </ul>
+        </div>
+
+
+        <div style={styles.column}>
+          <h3 style={styles.heading}>Follow Us</h3>
+          <div style={styles.socialIcons}>
+            <ContactUs/>
+          </div>
+        </div>
       </div>
     </footer>
   );
@@ -22,23 +38,42 @@ const styles = {
   footer: {
     backgroundColor: "#2E3B55",
     color: "#FFFFFF",
-    padding: "1rem 0",
-    textAlign: "center",
-    marginTop: "auto",
+    padding: "2rem 0",
   },
   container: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     maxWidth: "1200px",
     margin: "0 auto",
     padding: "0 1rem",
   },
-  text: {
-    margin: "0.5rem 0",
-    fontSize: "0.9rem",
+  column: {
+    flex: "1 1 200px",
+    margin: "1rem",
+    textAlign: "left",
+  },
+  heading: {
+    fontSize: "1.2rem",
+    marginBottom: "1rem",
+    borderBottom: "2px solid #fff",
+    paddingBottom: "0.5rem",
+    color: "#FFFFFF",
+  },
+  list: {
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
   },
   link: {
-    color: "#FFD700",
+    color: "#fff",
     textDecoration: "none",
-    margin: "0 0.5rem",
+    display: "block",
+    margin: "0.5rem 0",
+  },
+  socialIcons: {
+    display: "flex",
+    gap: "0.5rem",
   },
 };
 

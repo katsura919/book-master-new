@@ -87,12 +87,10 @@ const StyledWrapper = styled.div`
 
   /* Hide input and only show the icon on mobile */
   @media (max-width: 768px) {
-    .input {
-      display: none;
+    .group {
+      max-width: 100px;
     }
-    .icon {
-      fill: #0d0c22;
-    }
+
   }
 `;
 

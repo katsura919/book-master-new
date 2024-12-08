@@ -1,0 +1,129 @@
+/* Main container styling */
+.register-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 100px;
+}
+
+/* Header styling */
+.register-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a90e2;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot-icon {
+    width: 12px;
+    height: 12px;
+    background-color: #4a90e2;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Subtitle styling */
+.register-subtitle {
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Error message styling */
+.error-message {
+    color: red;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+/* Form styling */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input field styling */
+.input-field {
+    width: 95%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #4a90e2;
+}
+
+/* Half-width input for name fields */
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.half-width {
+    width: 48%;
+}
+
+/* Submit button styling */
+.submit-button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #357abd;
+}
+
+/* Footer text styling */
+.footer-text {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.signin-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signin-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .register-card {
+        padding: 15px;
+    }
+
+    .register-header {
+        font-size: 1.3rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .half-width {
+        width: 100%;
+    }
+}

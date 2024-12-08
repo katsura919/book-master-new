@@ -19,11 +19,13 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <div>
-                <img
-                    src= {logo}
-                    alt="Business Illustration"
-                    className="logo"
-                />
+                <Link className="navbar-link" to="/">
+                    <img
+                        src= {logo}
+                        alt="Business Illustration"
+                        className="logo"
+                    />
+                </Link>
             </div>
             <div><Search className="search-bar"/></div>
             

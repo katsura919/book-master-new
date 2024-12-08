@@ -135,134 +135,136 @@ function BookBorrowForm() {
   }));
 
   return (
-    <div>
-      <form className="borrow-form" onSubmit={handleSubmit}>
-        <h2>Book Check-Out Form</h2>
-        {/* Borrower Form Fields */}
-        <label>
-          Borrower Type:
-          <select value={borrowerType} onChange={(e) => setBorrowerType(e.target.value)}>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-            <option value="employee">Employee</option>
-          </select>
-        </label>
-        <label>
-          ID Number:
-          <input
-            type="text"
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          First Name:
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Last Name:
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
+    <div style={{marginTop: 100}}>
+      <div>
+        <form className="borrow-form" onSubmit={handleSubmit}>
+          <h2 className='borrow-form-header'>REQUEST FORM</h2>
+          {/* Borrower Form Fields */}
+          <label>
+            Borrower Type:
+            <select className='borrower-type-selector' value={borrowerType} onChange={(e) => setBorrowerType(e.target.value)}>
+              <option value="student">Student</option>
+              <option value="faculty">Faculty</option>
+              <option value="employee">Employee</option>
+            </select>
+          </label>
+          <label>
+            ID Number:
+            <input
+              type="text"
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            First Name:
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            Last Name:
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </label>
+          <label>
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
 
-        <label>
-          Contact Number:
-          <input
-            type="tel"
-            value={contactNumber}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*$/.test(value)) { // Allow only digits
-                setContactNumber(value);
-              }
-            }}
-            required
-          />
-        </label>
+          <label>
+            Contact Number:
+            <input
+              type="tel"
+              value={contactNumber}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) { // Allow only digits
+                  setContactNumber(value);
+                }
+              }}
+              required
+            />
+          </label>
 
 
-        <label>
-          Department:
+          <label>
+            Department:
+            <Select
+              options={departmentOptions}
+              onChange={setDepartment}
+              value={department}
+              placeholder="Select Department"
+              required
+            />
+          </label>
+
+          <h3>Books to Borrow:</h3>
           <Select
-            options={departmentOptions}
-            onChange={setDepartment}
-            value={department}
-            placeholder="Select Department"
-            required
+            isMulti
+            options={bookOptions}
+            onChange={handleBookSelect}
+            value={selectedBooks}
+            placeho
+            lder="Search and select books"
           />
-        </label>
 
-        <h3>Books to Borrow:</h3>
-        <Select
-          isMulti
-          options={bookOptions}
-          onChange={handleBookSelect}
-          value={selectedBooks}
-          placeho
-          lder="Search and select books"
+          <div className='terms-conditions-container'>
+            <div>
+              <input
+                className='confirm-box'
+                type="checkbox"
+                checked={isAccepted}
+                onChange={handleCheckboxChange}
+              />
+            </div>
+            <div>
+            I have read and accepted the{" "}
+            <span
+              style={{
+                color: "blue",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+              onClick={openModal}
+            >
+              terms and conditions
+            </span>
+          </div>
+          </div>    
+
+          <button 
+          disabled={!isAccepted}
+          className="submit-req-btn" 
+          type="submit">
+            Checkout
+          </button>
+        </form>
+        
+        {/* Borrowing Terms Modal */}
+        <BorrowingTermsModal isOpen={isModalOpen} onClose={closeModal} />
+
+        {/* QRCodeModal Component */}
+        <QRCodeModal 
+          modalIsOpen={modalIsOpen} 
+          setModalIsOpen={setModalIsOpen} 
+          trackingURL={trackingURL} 
         />
 
-        <div className='terms-conditions-container'>
-          <div>
-            <input
-              className='confirm-box'
-              type="checkbox"
-              checked={isAccepted}
-              onChange={handleCheckboxChange}
-            />
-          </div>
-          <div>
-          I have read and accepted the{" "}
-          <span
-            style={{
-              color: "blue",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-            onClick={openModal}
-          >
-            terms and conditions
-          </span>
-        </div>
-        </div>    
-
-        <button 
-        disabled={!isAccepted}
-        className="submit-req-btn" 
-        type="submit">
-          Checkout
-        </button>
-      </form>
-      
-      {/* Borrowing Terms Modal */}
-      <BorrowingTermsModal isOpen={isModalOpen} onClose={closeModal} />
-
-      {/* QRCodeModal Component */}
-      <QRCodeModal 
-        modalIsOpen={modalIsOpen} 
-        setModalIsOpen={setModalIsOpen} 
-        trackingURL={trackingURL} 
-      />
-
+      </div>
     </div>
   );
 }
