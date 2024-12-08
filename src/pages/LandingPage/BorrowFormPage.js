@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
 import QRCodeModal from './component/QRCodeModal';
+import BorrowingTermsModal from './component/BorrowingTermsModal';
 import './BorrowFormPage.css';
 
 
 function BookBorrowForm() {
+  const apiBaseUrl = 'http://localhost:5000'; 
+  const frontBaseUrl = 'http://localhost:3000'; 
   const [borrowerType, setBorrowerType] = useState('student');
   const [studentId, setStudentId] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -16,6 +19,18 @@ function BookBorrowForm() {
   const [availableBooks, setAvailableBooks] = useState([]);
   const [department, setDepartment] = useState(null);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  
+  const [isAccepted, setIsAccepted] = useState(false);
+
+
+  const handleCheckboxChange = (e) => {
+    setIsAccepted(e.target.checked);
+  };
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [trackingURL, setTrackingURL] = useState('');
 
@@ -24,7 +39,7 @@ function BookBorrowForm() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/available-books');
+        const response = await axios.get(`${apiBaseUrl}/available-books`);
         setAvailableBooks(response.data);
       } catch (error) {
         console.error('Error fetching books:', error);
@@ -34,11 +49,12 @@ function BookBorrowForm() {
   }, []);
 
   const departmentOptions = [
-    { value: 'Computer Science', label: 'Computer Science' },
-    { value: 'Mathematics', label: 'Mathematics' },
-    { value: 'Physics', label: 'Physics' },
-    { value: 'Engineering', label: 'Engineering' },
-    { value: 'Biology', label: 'Biology' },
+    { value: 'CEA', label: 'CEA' },
+    { value: 'CITC', label: 'CITC' },
+    { value: 'CSM', label: 'CSM' },
+    { value: 'CSTE', label: 'CSTE' },
+    { value: 'COT', label: 'COT' },
+    { value: 'SHS', label: 'SHS' },
   ];
 
   const getBorrowLimit = (type) => {
@@ -69,7 +85,7 @@ function BookBorrowForm() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/borrow-book', {
+      const response = await axios.post(`${apiBaseUrl}/borrow-book`, {
         studentId,
         firstName,
         lastName, 
@@ -82,7 +98,7 @@ function BookBorrowForm() {
 
       if (response.status === 201) {
         const { requestId } = response.data; // Get the request ID
-        const qrURL = `http://localhost:3000/track-request/${requestId}`;
+        const qrURL = `${frontBaseUrl}/track-request/${requestId}`;
         setTrackingURL(qrURL);
 
         // Open the modal with the QR code
@@ -115,7 +131,7 @@ function BookBorrowForm() {
 
   const bookOptions = availableBooks.map((book) => ({
     value: book.book_id,
-    label: `${book.title} (ISBN: ${book.isbn}) - ${book.available_copies} available`,
+    label: `${book.title} - ${book.available_copies} available`,
   }));
 
   return (
@@ -194,18 +210,51 @@ function BookBorrowForm() {
             required
           />
         </label>
+
         <h3>Books to Borrow:</h3>
         <Select
           isMulti
           options={bookOptions}
           onChange={handleBookSelect}
           value={selectedBooks}
-          placeholder="Search and select books"
+          placeho
+          lder="Search and select books"
         />
-        <button className="submit-req-btn" type="submit">
+
+        <div className='terms-conditions-container'>
+          <div>
+            <input
+              className='confirm-box'
+              type="checkbox"
+              checked={isAccepted}
+              onChange={handleCheckboxChange}
+            />
+          </div>
+          <div>
+          I have read and accepted the{" "}
+          <span
+            style={{
+              color: "blue",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+            onClick={openModal}
+          >
+            terms and conditions
+          </span>
+        </div>
+        </div>    
+
+        <button 
+        disabled={!isAccepted}
+        className="submit-req-btn" 
+        type="submit">
           Checkout
         </button>
       </form>
+      
+      {/* Borrowing Terms Modal */}
+      <BorrowingTermsModal isOpen={isModalOpen} onClose={closeModal} />
 
       {/* QRCodeModal Component */}
       <QRCodeModal 

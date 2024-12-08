@@ -4,6 +4,7 @@ import axios from 'axios';
 import './TrackingPage.css';
 
 function TrackingPage() {
+  const apiBaseUrl = 'http://localhost:5000';
   const { req_id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ function TrackingPage() {
     // Fetch the tracking data
     const fetchTrackingData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/track-request/${req_id}`);
+        const response = await axios.get(`${apiBaseUrl}/track-request/${req_id}`);
         setData(response.data); // API returns { borrower_name, request_status, books }
       } catch (err) {
         console.error('Error fetching tracking data:', err.message);

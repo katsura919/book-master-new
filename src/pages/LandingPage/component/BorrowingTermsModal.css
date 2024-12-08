@@ -1,0 +1,122 @@
+/* Overlay: Dark transparent background */
+.borrowing-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above all other elements */
+  }
+  
+  /* Modal container styling with a high z-index */
+  .borrowing-modal-content {
+    max-width: 600px;
+    width: 90%;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    z-index: 1100; /* Ensure it's above the overlay */
+    overflow-y: auto;
+  }
+  
+  /* Header */
+  .borrowing-modal-header {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+  }
+  
+  /* Paragraphs */
+  .borrowing-modal-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  /* Table Styles */
+  .borrowing-modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .borrowing-modal-table th,
+  .borrowing-modal-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .borrowing-modal-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .borrowing-modal-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Close Button */
+  .borrowing-modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .borrowing-modal-close-btn:hover {
+    color: #333;
+  }
+  
+  /* Clickable "Terms and Conditions" text */
+  .terms-link {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .terms-link:hover {
+    color: #0056b3;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .borrowing-modal-content {
+      padding: 15px;
+    }
+  
+    .borrowing-modal-header {
+      font-size: 1.4rem;
+    }
+  
+    .borrowing-modal-text {
+      font-size: 0.9rem;
+    }
+  
+    .borrowing-modal-table th,
+    .borrowing-modal-table td {
+      font-size: 0.8rem;
+      padding: 8px;
+    }
+  
+    .borrowing-modal-close-btn {
+      font-size: 1.2rem;
+    }
+  }
+  

@@ -7,6 +7,7 @@ import EditBookModal from "./Modals/EditBookModal";
 import BookRequestsModal from "./Modals/BookRequestsModal";  // Import the updated modal
 
 const Books = () => {
+  const apiBaseUrl = 'http://localhost:5000'; 
   const [totalBooks, setTotalBooks] = useState(null);
   const [availableBooks, setAvailableBooks] = useState(0);
   const [borrowedBooks, setBorrowedBooks] = useState(0);
@@ -20,7 +21,7 @@ const Books = () => {
 
   const fetchBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/book-list");
+      const response = await axios.get(`${apiBaseUrl}/book-list`);
       setBooks(response.data);
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -45,9 +46,9 @@ const Books = () => {
       try {
         // Fetch the stats using Promise.all for concurrent API calls
         const [availableResponse, borrowedResponse, totalBooksResponse] = await Promise.all([
-          axios.get('http://localhost:5000/api/total-available-books'),
-          axios.get('http://localhost:5000/api/total-borrowed-books'),
-          axios.get('http://localhost:5000/api/total-books')  // Added new API for total books
+          axios.get(`${apiBaseUrl}/api/total-available-books`),
+          axios.get(`${apiBaseUrl}/api/total-borrowed-books`),
+          axios.get(`${apiBaseUrl}/api/total-books`)  // Added new API for total books
         ]);
     
         // Set state for available and borrowed books
@@ -62,7 +63,7 @@ const Books = () => {
     
     const fetchTopBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/top-borrowed-books');
+        const response = await axios.get(`${apiBaseUrl}/api/top-borrowed-books`);
         setTopBooks(response.data);
       } catch (error) {
         console.error('Error fetching top borrowed books:', error);
@@ -113,7 +114,7 @@ const Books = () => {
 
   const handleSaveEdit = async (updatedBook) => {
     try {
-      await axios.put(`http://localhost:5000/book-edit/${updatedBook.book_id}`, updatedBook);
+      await axios.put(`${apiBaseUrl}/book-edit/${updatedBook.book_id}`, updatedBook);
       setBooks((prevBooks) =>
         prevBooks.map((book) => (book.book_id === updatedBook.book_id ? updatedBook : book))
       );

@@ -4,6 +4,7 @@ import Modal from "react-modal"; // Import react-modal
 import "./EditBookModal.css";
 
 const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
+  const apiBaseUrl = 'http://localhost:5000'; 
   const [bookData, setBookData] = useState(book);
   const [isLoading, setIsLoading] = useState(true);
   const [coverImage, setCoverImage] = useState(null);
@@ -14,7 +15,7 @@ const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
     const fetchBookData = async () => {
       if (isOpen && book?.book_id) {
         try {
-          const response = await axios.get(`http://localhost:5000/book/${book.book_id}`);
+          const response = await axios.get(`${apiBaseUrl}/book/${book.book_id}`);
           setBookData(response.data);
           setCoverImagePreview(response.data.cover_image); // Set initial cover image preview
           setIsLoading(false);
@@ -60,7 +61,7 @@ const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
     if (coverImage) formData.append("cover_image", coverImage); // Include image file if available
 
     try {
-      await axios.put(`http://localhost:5000/book-edit/${bookData.book_id}`, formData, {
+      await axios.put(`${apiBaseUrl}/book-edit/${bookData.book_id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       onSave(bookData); // Pass updated data back to parent component
@@ -74,7 +75,7 @@ const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this book?");
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`http://localhost:5000/delete-book/${bookData.book_id}`);
+        const response = await axios.delete(`${apiBaseUrl}/delete-book/${bookData.book_id}`);
         if (response.status === 200) {
           console.log("Book deleted successfully");
           onDelete(); // Callback to refresh book list in parent

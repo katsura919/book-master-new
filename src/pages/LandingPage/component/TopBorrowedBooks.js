@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './TopBorrowedBooks.css'; // Import CSS for styling
 
 const TopBorrowedBooks = () => {
-  const apiBaseUrl = 'http://localhost:5000';
+  const apiBaseUrl = 'http://localhost:5000'; 
   const [topBooks, setTopBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +35,7 @@ const TopBorrowedBooks = () => {
   }, []);
 
   if (loading) return <p>Loading top borrowed books...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <p></p>;
 
   return (
     <div className="top-borrowed-books">

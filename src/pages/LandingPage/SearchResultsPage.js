@@ -78,8 +78,7 @@ const SearchResults = () => {
               />
             )}
             <h3>{book.title}</h3>
-            <p>Author: {book.author}</p>
-            <p>ISBN: {book.isbn}</p>
+            <p>{book.author}</p>
             <p>Available Copies: {book.available_copies}</p>
           </Card>
         ))}

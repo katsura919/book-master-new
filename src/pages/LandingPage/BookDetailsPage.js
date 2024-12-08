@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import './BookDetailsPage.css'; // Import the CSS file
 
 const BookDetailsPage = () => {
+  const apiBaseUrl = 'http://localhost:5000'; 
   const { bookId } = useParams();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ const BookDetailsPage = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/book/${bookId}`);
+        const response = await axios.get(`${apiBaseUrl}/book/${bookId}`);
         setBook(response.data);
       } catch (err) {
         setError('Could not fetch book details. Please try again.');

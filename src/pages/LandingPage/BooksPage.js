@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import "./BooksPage.css"; // Include a CSS file for styling
 
 const AllBooks = () => {
+  const apiBaseUrl = 'http://localhost:5000'; 
   const [books, setBooks] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -14,7 +15,7 @@ const AllBooks = () => {
   // Fetch books from the server
   const fetchBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/all-books", {
+      const response = await axios.get(`${apiBaseUrl}/all-books`, {
         params: {
           category_id: selectedCategory?.value || null,
           page: currentPage,
@@ -30,7 +31,7 @@ const AllBooks = () => {
   // Fetch categories for the filter
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/categories");
+      const response = await axios.get(`${apiBaseUrl}/categories`);
       const options = response.data.map((category) => ({
         value: category.category_id,
         label: category.name,
@@ -98,10 +99,9 @@ const AllBooks = () => {
                   className="cover-image"
                 />
               )}
-              <h3>{book.title}</h3>
-              <p><strong>Author:</strong> {book.author}</p>
-              <p><strong>ISBN:</strong> {book.isbn}</p>
-              <p><strong>Available Copies:</strong> {book.available_copies}</p>
+              <h4>{book.title}</h4>
+              <p>{book.author}</p>
+              <p>Available Copies: {book.available_copies}</p>
             </div>
           ))
         ) : (

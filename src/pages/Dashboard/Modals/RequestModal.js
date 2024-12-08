@@ -18,7 +18,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
   const fetchRequestDetails = async () => {
     if (requestID) {
       try {
-        const response = await fetch(`http://localhost:5000/req/${requestID}`);
+        const response = await fetch(`${apiBaseUrl}/req/${requestID}`);
         if (!response.ok) {
           throw new Error('Failed to fetch request details');
         }
@@ -38,7 +38,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   const updateBookStatus = async (bookId) => {
     try {
-      const response = await fetch(`http://localhost:5000/update-book-status/${bookId}`, {
+      const response = await fetch(`${apiBaseUrl}/update-book-status/${bookId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ book_status: 'RETURNED' }),
@@ -62,7 +62,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
   const pageWidth = doc.internal.pageSize.getWidth(); // Get page width
   
   // Title
-  const title = 'INVOICE';
+  const title = 'LOANED BOOKS';
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   const titleWidth = doc.getTextWidth(title); // Get the width of the text
@@ -71,14 +71,21 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
   
   // Request ID and Borrower Information
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(12);
-  doc.text(`University of Science and Technology of Southern Philipines`, 50, 30);
-  doc.text(`Request #: ${requestDetails?.req_id || 'N/A'}`, 20, 42);
-  doc.text(`Name: ${requestDetails?.borrower.first_name} ${requestDetails?.borrower.last_name || 'N/A'}`, 20, 50);
-  doc.text(`Type: ${requestDetails?.borrower.borrower_type || 'N/A'}`, 20, 58);
-  doc.text(`Status: ${requestDetails?.status || 'N/A'}`, 20, 66);
-  doc.text(`Request Created: ${requestDetails?.req_created || 'N/A'}`, 20, 74);
-  doc.text(`Approval Date: ${requestDetails?.req_approve || 'N/A'}`, 20, 82);
+  doc.setFontSize(11);
+  doc.text(`University of Science and Technology of Southern Philipines`, 50, 25);
+
+  doc.text(`USTP Library - CDO`, 20, 42);
+  doc.text(`Claro M. Recto Ave., Cagayan de Oro, Philippines`, 20, 48);
+  doc.text(`0965 815 2688`, 20, 54);
+  doc.text(`Library@ustp.edu.ph`, 20, 60);
+  
+ 
+  doc.text(`Request ID: ${requestDetails?.req_id || 'N/A'}`, 20, 75);
+  doc.text(`Issued To: ${requestDetails?.borrower.first_name} ${requestDetails?.borrower.last_name || 'N/A'}`, 20, 81);
+  doc.text(`Type: ${requestDetails?.borrower.borrower_type || 'N/A'}`, 20,87);
+  doc.text(`Status: ${requestDetails?.status || 'N/A'}`, 20, 93);
+  doc.text(`Request Created: ${requestDetails?.req_created || 'N/A'}`, 20, 99);
+  doc.text(`Approval Date: ${requestDetails?.req_approve || 'N/A'}`, 20, 105);
 
   // Books Table Header and Data
   const booksData = requestDetails?.books || [];
@@ -93,7 +100,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   // Add table to the PDF
   doc.autoTable({
-    startY: 100, // Set where the table should start
+    startY: 115, // Set where the table should start
     head: [tableColumns], // Table headers
     body: tableRows, // Table rows with data
     theme: 'grid', // Optional: You can change the table theme (like 'striped', 'grid', 'plain', etc.)
@@ -108,7 +115,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   const handleApprove = async (reqId) => {
     try {
-      const response = await axios.post('http://localhost:5000/approve-request', { reqId });
+      const response = await axios.post(`${apiBaseUrl}/approve-request`, { reqId });
       if (response.status === 200) {
         setMessage('Request approved successfully!');
         setMessageType('success');
@@ -123,7 +130,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   const handleDecline = async (reqId) => {
     try {
-      const response = await axios.post('http://localhost:5000/reject-request', { reqId });
+      const response = await axios.post(`${apiBaseUrl}/reject-request`, { reqId });
       if (response.status === 200) {
         setMessage('Request declined successfully!');
         setMessageType('error');
@@ -138,7 +145,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   const handleReturn = async (reqId) => {
     try {
-      const response = await axios.post('http://localhost:5000/return-request', { reqId });
+      const response = await axios.post(`${apiBaseUrl}/return-request`, { reqId });
       if (response.status === 200) {
         setMessage('Request returned successfully!');
         setMessageType('error');
@@ -154,7 +161,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
   const handleDeleteRequest = async (reqId) => {
     if (window.confirm('Are you sure you want to delete this request? This action cannot be undone.')) {
       try {
-        const response = await axios.delete(`http://localhost:5000/delete-request/${reqId}`);
+        const response = await axios.delete(`${apiBaseUrl}/delete-request/${reqId}`);
         if (response.status === 200) {
           setMessage('Request deleted successfully!');
           setMessageType('success');
@@ -219,7 +226,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
           <MessageBox
             message={message}
             type={messageType}
-            duration={5000}
+            duration={2000}
             onClose={() => setMessage(null)}
           />
         )}
@@ -255,7 +262,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
             <p><strong>Type:</strong> {requestDetails.borrower.borrower_type}</p>
             <p><strong>Status:</strong> {requestDetails.status}</p>
             <p><strong>Request Created:</strong> {requestDetails.req_created}</p>
-            <p><strong>Approval Date:</strong> {requestDetails.req_approve || 'N/A'}</p>
+            <p><strong>Date Approved:</strong> {requestDetails.req_approve || 'N/A'}</p>
 
             {/* Table for book details */}
             <h3>Books:</h3>

@@ -8,6 +8,8 @@ Modal.setAppElement('#root'); // Assuming your root element has id 'root'
 const ENTRIES_PER_PAGE = 10;
 
 function BookReq() {
+  const apiBaseUrl = 'http://localhost:5000'; 
+
   const [bookRequests, setBookRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +31,7 @@ function BookReq() {
  };
   const fetchBookRequests = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/${fetchType}`);
+      const response = await axios.get(`${apiBaseUrl}/${fetchType}`);
       setBookRequests(response.data);
     } catch (error) {
       console.error('Error fetching book requests:', error);
@@ -91,7 +93,7 @@ function BookReq() {
 
   const fetchRequestCounts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/request-counts'); // Adjust the URL as needed
+      const response = await axios.get(`${apiBaseUrl}/request-counts`); // Adjust the URL as needed
       setRequest(response.data);
     } catch (error) {
       console.error('Error fetching request counts:', error);
@@ -281,8 +283,8 @@ function BookReq() {
                   {request.req_id}
                 </td>
                 <td>{`${request.borrower.first_name} ${request.borrower.last_name}`}</td>
-                <td>{request.borrower.borrower_type}</td>
                 <td>{request.borrower_id}</td>
+                <td>{request.borrower.borrower_type} </td>
                 <td className={`bookreq-status`}>
                    <div className={`bookreq-status-text ${request.status.toLowerCase()}`}>{request.status}</div>
                 </td> 

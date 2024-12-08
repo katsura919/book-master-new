@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Modal from "react-modal"; // Import react-modal
-import './BookRequestsModal.css';  // Import your modal styles
+import Modal from "react-modal"; 
+import './BookRequestsModal.css';  
 
-// Set the app element for accessibility (screen readers)
+
 Modal.setAppElement("#root");
 
 const BookRequestsModal = ({ isOpen, onClose, bookId }) => {
-  const [requests, setRequests] = useState([]);  // State to store fetched data
-  const [loading, setLoading] = useState(true);   // Loading state to handle loading UI
-  const [error, setError] = useState(null);       // Error state to handle errors
+  const apiBaseUrl = 'http://localhost:5000'; 
+  const [requests, setRequests] = useState([]);  
+  const [loading, setLoading] = useState(true);  
+  const [error, setError] = useState(null);      
 
   // Fetch book requests data when the modal is opened or bookId changes
   useEffect(() => {
@@ -18,7 +19,7 @@ const BookRequestsModal = ({ isOpen, onClose, bookId }) => {
     const fetchBookRequests = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await axios.get(`http://localhost:5000/book-requests/${bookId}`);
+        const response = await axios.get(`${apiBaseUrl}/book-requests/${bookId}`);
         setRequests(response.data);  // Set the response data in the state
       } catch (err) {
         setError("Failed to fetch data");  // Set error if the request fails

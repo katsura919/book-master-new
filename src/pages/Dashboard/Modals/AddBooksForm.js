@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
-
+import MessageBox from "../../../components/MessageBox";
 const Books = () => {
+  const apiBaseUrl = 'http://localhost:5000';
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState(''); 
   const initialBookData = {
     title: "",
     isbn: "",
@@ -22,7 +25,7 @@ const Books = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/categories"); // Adjust endpoint as needed
+        const response = await axios.get(`${apiBaseUrl}/categories`); // Adjust endpoint as needed
         const options = response.data.map((category) => ({
           value: category.category_id,
           label: category.name,
@@ -74,10 +77,11 @@ const Books = () => {
     formData.append("categories", JSON.stringify(categoryIds));
 
     try {
-      const response = await axios.post("http://localhost:5000/books", formData, {
+      const response = await axios.post(`${apiBaseUrl}/books`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Book added successfully!");
+      setMessage('Book added successfully!');
+      setMessageType('success');
 
       // Reset fields after successful submission
       setBookData(initialBookData);
@@ -91,6 +95,14 @@ const Books = () => {
 
   return (
     <div className="add-book-wrapper">
+      {message && (
+          <MessageBox
+            message={message}
+            type={messageType}
+            duration={2000}
+            onClose={() => setMessage(null)}
+          />
+        )}
       <form onSubmit={handleSubmit}>
         <div>
           <header className="content-header">

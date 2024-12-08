@@ -1,0 +1,150 @@
+/* Customizing the overlay to have a faded black background */
+.borrower-modal-overlay{
+    background-color: rgba(0, 0, 0, 0.75) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above all other elements */
+}
+
+  /* Modal Styles */
+  .borrower-modal {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .borrower-modal__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .borrower-modal__loading,
+  .borrower-modal__no-requests {
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+  }
+  
+  .borrower-modal__request-list {
+    margin-top: 20px;
+  }
+  
+  .borrower-modal__request-heading {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .borrower-modal__book-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .borrower-modal__book-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .borrower-modal__book-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .borrower-modal__book-status,
+  .borrower-modal__book-date,
+  .borrower-modal__book-approval,
+  .borrower-modal__book-overdue {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+  
+  .borrower-modal__close-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .borrower-modal__close-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .borrower-modal {
+      max-width: 90%;
+      padding: 15px;
+    }
+  
+    .borrower-modal__title {
+      font-size: 20px;
+    }
+  
+    .borrower-modal__request-heading {
+      font-size: 18px;
+    }
+  
+    .borrower-modal__book-title {
+      font-size: 16px;
+    }
+  
+    .borrower-modal__book-status,
+    .borrower-modal__book-date,
+    .borrower-modal__book-approval,
+    .borrower-modal__book-overdue {
+      font-size: 14px;
+    }
+  
+    .borrower-modal__close-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .borrower-modal {
+      max-width: 95%;
+      padding: 10px;
+    }
+  
+    .borrower-modal__title {
+      font-size: 18px;
+    }
+  
+    .borrower-modal__request-heading {
+      font-size: 16px;
+    }
+  
+    .borrower-modal__book-title {
+      font-size: 14px;
+    }
+  
+    .borrower-modal__book-status,
+    .borrower-modal__book-date,
+    .borrower-modal__book-approval,
+    .borrower-modal__book-overdue {
+      font-size: 12px;
+    }
+  
+    .borrower-modal__close-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+  

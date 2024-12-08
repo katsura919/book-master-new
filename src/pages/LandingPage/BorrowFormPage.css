@@ -77,6 +77,21 @@
   color: #fff;
 }
 
+.terms-conditions-container{
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Adjust the spacing between the checkbox and the text */
+}
+
+.confirm-box{
+  margin: 0;
+}
+
+.terms-conditions-container div {
+  margin: 0;
+}
 .submit-req-btn:hover {
   background-color: #32cf47;
   box-shadow: 0 0 0 5px #4bf63b5f;

@@ -20,6 +20,7 @@ import './Overview.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
 function Overview() {
+  const apiBaseUrl = 'http://localhost:5000'; 
   const user = useSelector((state) => state.auth.user);
 
   const [requests, setRequests] = useState({
@@ -60,7 +61,7 @@ function Overview() {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/request-date');
+        const response = await axios.get(`${apiBaseUrl}/request-date`);
         setCounts(response.data);
       } catch (error) {
         console.error('Error fetching request counts:', error);
@@ -69,7 +70,7 @@ function Overview() {
 
     const fetchRequestCounts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/request-counts');
+        const response = await axios.get(`${apiBaseUrl}/request-counts`);
         setRequests(response.data);
         setStatusData({
           labels: ['Pending', 'Approved', 'Overdue'],
@@ -92,7 +93,7 @@ function Overview() {
 
     const fetchChartData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/chart-data');
+        const response = await axios.get(`${apiBaseUrl}/chart-data`);
         const data = response.data || {};
         setChartData({
           labels: (data.months || []).map((month) =>

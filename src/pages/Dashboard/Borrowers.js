@@ -1,6 +1,8 @@
+// Borrowers.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Borrowers.css'; // Custom styles
+import BorrowerModal from './Modals/BorrowerModal';  // Import the modal component
+import './Borrowers.css';  // Custom styles
 
 const Borrowers = () => {
   const apiBaseUrl = 'http://localhost:5000';
@@ -8,7 +10,9 @@ const Borrowers = () => {
   const [totalBorrowers, setTotalBorrowers] = useState(null);
   const [borrowerTypes, setBorrowerTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);  // Set the items per page
+  const [itemsPerPage] = useState(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);  // State to control modal visibility
+  const [selectedBorrowerId, setSelectedBorrowerId] = useState(null);  // State to store the selected borrower ID
 
   useEffect(() => {
     // Fetch borrowers data
@@ -19,7 +23,6 @@ const Borrowers = () => {
           // Log the response to inspect its structure
           console.log('API Response:', response);
       
-          // Assuming the actual data is inside `response.data.borrowers` or similar
           if (Array.isArray(response.data)) {
             setBorrowers(response.data);
           } else {
@@ -30,18 +33,18 @@ const Borrowers = () => {
         }
       };
       
+    // Fetch total count of borrowers
+    axios
+      .get(`${apiBaseUrl}/api/borrowers/count`)
+      .then((response) => setTotalBorrowers(response.data.total_borrowers))
+      .catch((error) => console.error("Error fetching total borrowers:", error));
 
-         // Fetch total count of borrowers
-        axios
-        .get(`${apiBaseUrl}/api/borrowers/count`)
-        .then((response) => setTotalBorrowers(response.data.total_borrowers))
-        .catch((error) => console.error("Error fetching total borrowers:", error));
-
-      // Fetch borrower type distribution
-      axios
-        .get(`${apiBaseUrl}/api/borrowers/type-distribution`)
-        .then((response) => setBorrowerTypes(response.data.borrower_types))
-        .catch((error) => console.error("Error fetching borrower types:", error));
+    // Fetch borrower type distribution
+    axios
+      .get(`${apiBaseUrl}/api/borrowers/type-distribution`)
+      .then((response) => setBorrowerTypes(response.data.borrower_types))
+      .catch((error) => console.error("Error fetching borrower types:", error));
+      
     fetchBorrowers();
   }, []);
 
@@ -50,8 +53,8 @@ const Borrowers = () => {
 
   // Slice the borrowers array to get the current page's items
   const currentItems = borrowers.slice(
-    (currentPage - 1) * itemsPerPage,  // Start index for the current page
-    currentPage * itemsPerPage         // End index for the current page
+    (currentPage - 1) * itemsPerPage,  
+    currentPage * itemsPerPage         
   );
 
   // Handle page change
@@ -61,6 +64,18 @@ const Borrowers = () => {
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  // Open the modal when borrower ID is clicked
+  const openModal = (borrowerId) => {
+    setSelectedBorrowerId(borrowerId);
+    setIsModalOpen(true);
+  };
+
+  // Close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBorrowerId(null);
   };
 
   return (
@@ -75,13 +90,13 @@ const Borrowers = () => {
         </div>
 
         {/* Borrower Type Distribution Cards */}
-        <div className="borrower-type-list ">
+        <div className="borrower-type-list">
           {borrowerTypes.map((type) => (
             <div
               key={type.borrower_type}
               className={`borrower-type-item ${type.borrower_type}-card`} // Add dynamic class based on borrower type
             >
-              <div className={`borrower-type-name ${type.borrower_type} `}>
+              <div className={`borrower-type-name ${type.borrower_type}`}>
                 {type.borrower_type.charAt(0).toUpperCase() + type.borrower_type.slice(1)}
               </div>
               <div className="borrower-type-count">{type.count} Borrowers</div>
@@ -105,7 +120,9 @@ const Borrowers = () => {
         <tbody>
           {currentItems.map((borrower) => (
             <tr key={borrower.borrower_id}>
-              <td>{borrower.borrower_id}</td>
+              <td onClick={() => openModal(borrower.borrower_id)} style={{ cursor: 'pointer', color: 'blue' }}> 
+                  {borrower.borrower_id}
+              </td>
               <td>{borrower.first_name}</td>
               <td>{borrower.last_name}</td>
               <td>{borrower.department || 'N/A'}</td>
@@ -118,7 +135,6 @@ const Borrowers = () => {
           ))}
         </tbody>
       </table>
-
 
       <div className="pagination">
         <button 
@@ -137,6 +153,13 @@ const Borrowers = () => {
           Next
         </button>
       </div>
+
+      {/* Modal to display Borrower request details */}
+      <BorrowerModal 
+        isOpen={isModalOpen} 
+        onRequestClose={closeModal} 
+        borrowerId={selectedBorrowerId} 
+      />
     </div>
   );
 };
