@@ -3,7 +3,7 @@ import Select from "react-select";
 import axios from "axios";
 import MessageBox from "../../../components/MessageBox";
 const Books = () => {
-  const apiBaseUrl = 'http://localhost:5000';
+  const apiBaseUrl = 'https://book-master-server.onrender.com';
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState(''); 
   const initialBookData = {
@@ -103,6 +103,7 @@ const Books = () => {
             onClose={() => setMessage(null)}
           />
         )}
+
       <form onSubmit={handleSubmit}>
         <div>
           <header className="content-header">
@@ -111,6 +112,7 @@ const Books = () => {
         </div>
 
         <input
+          className="add-book-input"
           type="text"
           name="title"
           placeholder="Title"
@@ -120,6 +122,7 @@ const Books = () => {
         />
 
         <input
+          className="add-book-input"
           type="text"
           name="isbn"
           placeholder="ISBN"
@@ -129,6 +132,7 @@ const Books = () => {
         />
 
         <input
+          className="add-book-input"
           type="text"
           name="author"
           placeholder="Author"
@@ -138,15 +142,17 @@ const Books = () => {
         />
 
         <textarea
+          className="add-book-input"
           name="description"
           placeholder="Description"
           value={bookData.description}
           onChange={handleChange}
-          style={{ width: "100%", minHeight: "50px",  overflow: "hidden" }} // Prevent resizing but allow auto expansion
+          style={{ width: 870, minHeight: "50px",  overflow: "hidden" }} // Prevent resizing but allow auto expansion
           required
         />
 
         <input
+          className="add-book-input"
           type="number"
           name="total_copies"
           placeholder="Total Copies"
@@ -155,7 +161,8 @@ const Books = () => {
           required
         />
 
-        <input
+        <input  
+          className="add-book-input"
           type="number"
           name="available_copies"
           placeholder="Available Copies"
@@ -166,6 +173,7 @@ const Books = () => {
 
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         <input
+          className="add-book-input"
           type="file"
           name="cover_image"
           accept="image/*"
@@ -185,7 +193,7 @@ const Books = () => {
           />
         </div>
 
-        <button type="submit">Add Book</button>
+        <button className="add-books-btn" type="submit">Add Book</button>
       </form>
     </div>
   );

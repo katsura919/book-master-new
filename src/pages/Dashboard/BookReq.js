@@ -8,7 +8,7 @@ Modal.setAppElement('#root'); // Assuming your root element has id 'root'
 const ENTRIES_PER_PAGE = 10;
 
 function BookReq() {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
 
   const [bookRequests, setBookRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -264,7 +264,7 @@ function BookReq() {
         </label>
       </div>
 
-      <div className="table-responsive">
+      <div className="book-req-table">
         <table className="dashboard-table styled-table">
           <thead>
             <tr>

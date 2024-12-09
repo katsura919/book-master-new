@@ -3,6 +3,8 @@
 /* Basic styling for the navbar */
 .dashboard-navbar-container {
     padding: 10px;
+    margin-left: 100px;
+    margin-right: 100px;
 }
 
 .dashboard-navbar {
@@ -59,6 +61,10 @@
 
 /* On mobile, hide the nav links and show hamburger menu */
 @media (max-width: 768px) {
+    .dashboard-navbar-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
     .nav-links {
         display: none;
         position: absolute;

@@ -8,7 +8,7 @@ import { jsPDF } from 'jspdf'; // Import jsPDF
 import 'jspdf-autotable';
 
 const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
-  const apiBaseUrl = 'http://localhost:5000';
+  const apiBaseUrl = 'https://book-master-server.onrender.com';
   const [requestDetails, setRequestDetails] = useState(null); // Use null for initial state
   const [error, setError] = useState(null); // State for error handling
   const [message, setMessage] = useState(null);
@@ -83,9 +83,8 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
   doc.text(`Request ID: ${requestDetails?.req_id || 'N/A'}`, 20, 75);
   doc.text(`Issued To: ${requestDetails?.borrower.first_name} ${requestDetails?.borrower.last_name || 'N/A'}`, 20, 81);
   doc.text(`Type: ${requestDetails?.borrower.borrower_type || 'N/A'}`, 20,87);
-  doc.text(`Status: ${requestDetails?.status || 'N/A'}`, 20, 93);
-  doc.text(`Request Created: ${requestDetails?.req_created || 'N/A'}`, 20, 99);
-  doc.text(`Approval Date: ${requestDetails?.req_approve || 'N/A'}`, 20, 105);
+  doc.text(`Request Status: ${requestDetails?.status || 'N/A'}`, 20, 93);
+ 
 
   // Books Table Header and Data
   const booksData = requestDetails?.books || [];
@@ -100,7 +99,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
 
   // Add table to the PDF
   doc.autoTable({
-    startY: 115, // Set where the table should start
+    startY: 105, // Set where the table should start
     head: [tableColumns], // Table headers
     body: tableRows, // Table rows with data
     theme: 'grid', // Optional: You can change the table theme (like 'striped', 'grid', 'plain', etc.)
@@ -286,8 +285,9 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                       <td>{book.hours_due}</td>
                       <td>{book.penalty}</td>
                       <td>{book.book_status}</td>
-                      <td>
-                      <button 
+                      <td >
+                      <button
+                        className='return' 
                         onClick={() => updateBookStatus(book.book_id)} 
                         disabled={requestDetails.status === 'Pending' || book?.book_status === 'RETURNED'}
                       >
@@ -295,6 +295,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                       </button>
 
                       <button
+                        className='renew' 
                         onClick={() => {
                           if (window.confirm("Are you sure you want to renew this book?")) {
                             renewBook(book.book_id, requestDetails?.req_id, requestDetails?.borrower.borrower_type);
@@ -306,7 +307,8 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                         Renew
                       </button>
 
-                      <button 
+                      <button
+                        className='remove'  
                         onClick={() => removeBook(book.book_id, requestDetails.req_id)} 
                         disabled={requestDetails.status === 'Pending' }
                       >
@@ -335,7 +337,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                 onClick={() => handleDecline(requestDetails?.req_id)}
                 disabled={requestDetails?.status === 'Rejected' || requestDetails?.status === 'Overdue' || requestDetails?.status === 'Returned'}
                 className={requestDetails?.status === 'Rejected' ? 'rejected' : 'rejected'}
-              >
+              > 
                 {requestDetails?.status === 'Rejected' ? 'Rejected' : 'Reject'}
               </button>
 
@@ -346,12 +348,12 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
                   }
                 }}
                 disabled={requestDetails?.status === 'Returned' || requestDetails?.status === 'Rejected'}
-                className={requestDetails?.status === 'Returned' ? 'returned' : 'Returned'}
+                className={requestDetails?.status === 'Returned' ? 'returned' : 'returned'}
               >
                 {requestDetails?.status === 'Returned' ? 'Returned' : 'Return'}
               </button>
 
-              <button onClick={onClose}>
+              <button className='book-req-close' onClick={onClose}>
                 Close
               </button>
             </div>

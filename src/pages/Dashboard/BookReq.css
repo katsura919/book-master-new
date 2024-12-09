@@ -1,7 +1,10 @@
 .bookreq-container{
   margin: 50px;
+  margin-left: 200px;
+  margin-right: 200px;
   font-family: "Poppins", sans-serif;
   color: #333;
+
 }
 
 /* Header */
@@ -101,6 +104,7 @@
 /*Search*/
 .bookreq-search{
   max-width: 480px;
+  margin-bottom: 15px;
 }
 /*Type Selector*/
 .radio-inputs {
@@ -145,6 +149,10 @@
   }
 
   /*Table*/
+  .book-req-table{
+    width: 100%;
+    overflow-y: auto;
+  }
   .styled-table {
     width: 100%;
     border-collapse: collapse;
@@ -259,3 +267,13 @@
     margin: 0 10px;
   }
   
+  @media screen and (max-width: 768px) {
+    .bookreq-container{
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+    .book-req-table{
+      width: 440px;
+      overflow-y: auto;
+    }
+  }

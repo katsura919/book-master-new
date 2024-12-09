@@ -2,7 +2,9 @@
 
 /* General styles */
 .overview-container {
-  margin: 50px;
+  margin-top: 50px;
+  margin-left: 200px;
+  margin-right: 200px;
   font-family: "Poppins", sans-serif;
   color: #333;
 }
@@ -138,8 +140,13 @@
 
 /* Responsive styles */
 @media screen and (max-width: 768px) {
+  .overview-container{
+    margin-left: 20px;
+    margin-right: 20px;
+  }
   .overview-header h1 {
     font-size: 20px;
+  
   }
 
   .summary-card-title {

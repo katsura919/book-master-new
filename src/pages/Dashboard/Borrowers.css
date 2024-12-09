@@ -1,6 +1,8 @@
 /* Container */
-.borrowers-container {
-    margin: 50px;
+.borrowers-page-container {
+    margin-top: 50px;
+    margin-left: 200px;
+    margin-right: 200px;
     font-family: "Poppins", sans-serif;
     color: #333;
   }
@@ -13,7 +15,8 @@
   }
   
   /* Table styles */
-  .styled-table {
+  
+  .borrowers-styled-table {
     width: 100%;
     border-collapse: collapse;
     background-color: #fff;
@@ -21,35 +24,36 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     font-family: 'Noto Sans', sans-serif; /* Replace with your preferred font */
+    overflow-y: auto;
   }
   
-  .styled-table thead {
+  .borrowers-styled-table thead {
     background-color: #f7f8fc;
     text-align: left;
   }
   
-  .styled-table th {
+  .borrowers-styled-table th {
     padding: 16px;
     color: #555;
     font-weight: 600;
     text-transform: uppercase;
   }
   
-  .styled-table tbody tr {
+  .borrowers-styled-table tbody tr {
     border-bottom: 1px solid #e6e6e6;
     transition: background-color 0.3s ease;
   }
   
-  .styled-table tbody tr:hover {
+  .borrowers-styled-table tbody tr:hover {
     background-color: #f9f9f9;
   }
   
-  .styled-table td {
+  .borrowers-styled-table td {
     padding: 16px;
     color: #333;
   }
   
-  .borrower-type {
+  .borrowers-styled-table {
     padding: 8px 12px;
     border-radius: 16px;
     font-weight: 500;
@@ -181,8 +185,14 @@
   color: #888;
 }
 
-/* Desktop Layout */
-@media (min-width: 768px) {
+/* Mobile Layout */
+@media screen and (max-width: 768px)  {
+  .borrowers-page-container {
+    margin-left: 20px;
+    margin-right: 20px;
+
+  }
+  
   .borrower-analytics-container {
     grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
   }

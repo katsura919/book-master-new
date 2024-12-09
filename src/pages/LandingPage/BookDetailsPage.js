@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom';
 import './BookDetailsPage.css'; // Import the CSS file
 
 const BookDetailsPage = () => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const { bookId } = useParams();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  console.log(book)
+
   useEffect(() => {
     const fetchBookDetails = async () => {
       if (!bookId) {

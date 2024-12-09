@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './TopBorrowedBooks.css'; // Import CSS for styling
 
 const TopBorrowedBooks = () => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const [topBooks, setTopBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -49,7 +49,7 @@ const TopBorrowedBooks = () => {
               className="book-cover"
             />
             <div className="book-info">
-              <h3>{book.title}</h3>
+              <h3 className='top-book-title'> {book.title.length > 20 ? book.title.substring(0, 25) + '...' : book.title}</h3>
               <p>Borrowed {book.borrow_count} times</p>
             </div>
           </div>

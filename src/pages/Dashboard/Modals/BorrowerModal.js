@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import './BorrowerModal.css'
 const BorrowerModal = ({ isOpen, onRequestClose, borrowerId }) => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const [borrowerRequest, setBorrowerRequest] = useState(null);
 
   // Fetch borrower requests when the modal opens and borrowerId is provided

@@ -20,7 +20,7 @@ import './Overview.css';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement);
 
 function Overview() {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const user = useSelector((state) => state.auth.user);
 
   const [requests, setRequests] = useState({
@@ -203,7 +203,7 @@ function Overview() {
   return (
     <div className="overview-container">
       <header className="overview-header">
-        <h1>Dashboard, {user.username}!</h1>
+        <h1>Welcome to Dashboard</h1>
       </header>
 
             {/* Cards Section */}

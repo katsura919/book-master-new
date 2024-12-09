@@ -4,7 +4,7 @@ import Modal from "react-modal"; // Import react-modal
 import "./EditBookModal.css";
 
 const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const [bookData, setBookData] = useState(book);
   const [isLoading, setIsLoading] = useState(true);
   const [coverImage, setCoverImage] = useState(null);
@@ -41,7 +41,7 @@ const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
 
     // Check if the file is an image
     if (file && !file.type.startsWith('image/')) {
-      setErrorMessage('Please select a valid image file.');
+      setErrorMessage('Please select a valid image format.');
       e.target.value = ''; // Clear the input
     } else {
       setErrorMessage(''); // Clear error message if file is valid
@@ -139,11 +139,20 @@ const EditBookModal = ({ isOpen, onClose, book, onSave, onDelete }) => {
         {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Error message */}
         <img src={coverImagePreview} alt="Cover Preview" style={{ maxWidth: '200px' }} /> {/* Image Preview */}
       </label>
-      <button onClick={handleSave}>Save</button>
-      <button onClick={onClose}>Cancel</button>
-      <button onClick={handleDelete} style={{ backgroundColor: 'red', color: 'white' }}>
+
+      <div className="edit-book-btn-container">
+      <button
+        className="save-book" 
+        onClick={handleSave}>Save</button>
+      <button 
+        className="cancel-book" 
+        onClick={onClose}>Cancel</button>
+      <button
+        className="delete-book" 
+        onClick={handleDelete} style={{ backgroundColor: 'red', color: 'white' }}>
         Delete Book
       </button>
+      </div>
     </Modal>
   );
 };

@@ -7,7 +7,7 @@ import './BookRequestsModal.css';
 Modal.setAppElement("#root");
 
 const BookRequestsModal = ({ isOpen, onClose, bookId }) => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const [requests, setRequests] = useState([]);  
   const [loading, setLoading] = useState(true);  
   const [error, setError] = useState(null);      

@@ -1,10 +1,9 @@
 .top-borrowed-books {
-  padding: 20px;
+
   text-align: center;
 }
 
 .top-borrowed-books-header {
-  margin-bottom: 20px;
   font-size: 1.5rem;
   color: #7F8C8D;
 }
@@ -15,7 +14,7 @@
   overflow-x: auto; /* Enable horizontal scrolling */
   white-space: nowrap; /* Prevent items from wrapping to the next line */
   padding: 10px;
-  border: 1px solid #ccc; /* Optional: Add border for better visibility */
+
   background-color: #f9f9f9; /* Optional: Background for scrollable area */
 }
 
@@ -41,7 +40,22 @@
 }
 
 .book-info {
-  padding: 10px;
+  display: flex; /* Enables flexbox */
+  flex-direction: column; /* Ensures items are stacked vertically */
+  align-items: center; /* Centers horizontally */
+  justify-content: center; /* Centers vertically */
+  text-align: center; /* Centers text inside each element */
+  padding: 0px;
+}
+
+.top-book-title {
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+  font-size: 16px; /* Adjust font size if needed */
+  line-height: 1.4; /* Adjust line height for readability */
 }
 
 .book-info h3 {

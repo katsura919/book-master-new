@@ -1,7 +1,7 @@
 .search-page-body{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    height: 100vh;
 }
 .search-header{
     font-size: 20px;

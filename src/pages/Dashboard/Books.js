@@ -7,7 +7,7 @@ import EditBookModal from "./Modals/EditBookModal";
 import BookRequestsModal from "./Modals/BookRequestsModal";  // Import the updated modal
 
 const Books = () => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const [totalBooks, setTotalBooks] = useState(null);
   const [availableBooks, setAvailableBooks] = useState(0);
   const [borrowedBooks, setBorrowedBooks] = useState(0);
@@ -191,7 +191,7 @@ const Books = () => {
         </div>
       </div>
 
-      <button onClick={handleOpenAddModal}>Add Books</button>
+      <button className="add-books-btn" onClick={handleOpenAddModal}>Add Books</button>
       <AddBookModal isOpen={isAddModalOpen} onClose={handleCloseAddModal}>
         <AddBookForm />
       </AddBookModal>
@@ -212,6 +212,7 @@ const Books = () => {
 
       <div>
         <input
+          className="book-search"
           type="text"
           placeholder="Search by title or author"
           value={searchTerm}
@@ -274,7 +275,7 @@ const Books = () => {
 
   <div className="top-books-container">
     <div className="top-books-card">
-      <div className="top-books-card-header">Top 5 Borrowed Books</div>
+      <div className="top-books-card-header">Top Borrowed Books</div>
       <div className="top-books-list">
         {topBooks.map((book, index) => (
           <div key={book.book_id} className="top-book-item">

@@ -24,6 +24,7 @@
     display: flex; /* Flexbox for horizontal layout */
     justify-content: flex-end;
     align-items: center;
+
 }
 
 .navbar-item {
@@ -41,6 +42,10 @@
 
 /* Optional: Responsive styling */
 @media (max-width: 800px) {
+    .navbar{
+        padding-left: 10px;
+        padding-right: 0px;
+    }
     .navbar-list {
         flex-direction: row; /* Stack items vertically on small screens */
         align-items: center; /* Center items */

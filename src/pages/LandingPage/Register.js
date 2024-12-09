@@ -51,8 +51,8 @@ const Register = () => {
                 </div>
                 <input
                     className="input-field"
-                    type="email"
-                    placeholder="Email"
+                    type="text"
+                    placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required

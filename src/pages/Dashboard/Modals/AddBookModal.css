@@ -31,3 +31,6 @@
     cursor: pointer;
   }
   
+  .add-book-input{
+    margin-bottom: 10px;
+  }

@@ -8,7 +8,7 @@ import './SearchResult.css';
 const ENTRIES_PER_PAGE = 2; // Number of entries per page
 
 const SearchResults = () => {
-  const apiBaseUrl = 'http://localhost:5000';
+  const apiBaseUrl = 'https://book-master-server.onrender.com';
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

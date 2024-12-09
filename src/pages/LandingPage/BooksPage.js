@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import "./BooksPage.css"; // Include a CSS file for styling
 
 const AllBooks = () => {
-  const apiBaseUrl = 'http://localhost:5000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
   const [books, setBooks] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);

@@ -5,7 +5,7 @@ import BorrowerModal from './Modals/BorrowerModal';  // Import the modal compone
 import './Borrowers.css';  // Custom styles
 
 const Borrowers = () => {
-  const apiBaseUrl = 'http://localhost:5000';
+  const apiBaseUrl = 'https://book-master-server.onrender.com';
   const [borrowers, setBorrowers] = useState([]);
   const [totalBorrowers, setTotalBorrowers] = useState(null);
   const [borrowerTypes, setBorrowerTypes] = useState([]);
@@ -79,7 +79,7 @@ const Borrowers = () => {
   };
 
   return (
-    <div className="borrowers-container">
+    <div className="borrowers-page-container">
       <h1 className="borrowers-header">Borrowers List</h1>
 
       <div className="borrower-analytics-container">

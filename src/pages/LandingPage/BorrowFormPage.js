@@ -7,8 +7,8 @@ import './BorrowFormPage.css';
 
 
 function BookBorrowForm() {
-  const apiBaseUrl = 'http://localhost:5000'; 
-  const frontBaseUrl = 'http://localhost:3000'; 
+  const apiBaseUrl = 'https://book-master-server.onrender.com'; 
+  const frontBaseUrl = 'https://book-master-new.vercel.app'; 
   const [borrowerType, setBorrowerType] = useState('student');
   const [studentId, setStudentId] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -250,7 +250,7 @@ function BookBorrowForm() {
           disabled={!isAccepted}
           className="submit-req-btn" 
           type="submit">
-            Checkout
+            Submit Request
           </button>
         </form>
         
