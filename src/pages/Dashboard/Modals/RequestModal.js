@@ -147,7 +147,7 @@ const RequestModal = ({ isOpen, onClose, requestID, refreshList }) => {
       const response = await axios.post(`${apiBaseUrl}/return-request`, { reqId });
       if (response.status === 200) {
         setMessage('Request returned successfully!');
-        setMessageType('error');
+        setMessageType('success');
         await fetchRequestDetails(); // Refresh the list after returning
       }
     } catch (error) {

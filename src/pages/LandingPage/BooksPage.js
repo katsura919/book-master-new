@@ -65,10 +65,7 @@ const AllBooks = () => {
 
   return (
     <div className="books-page">
-      <header>
-        <h1>Books</h1>
-      </header>
-      
+  
       <header>
         <h4>Category</h4>
       </header>
